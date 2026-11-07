@@ -15,7 +15,7 @@
       padding: 0;
       width: 100%;
       min-height: 100vh;
-      background-color: #0f172a !important; /* Główne tło - CIEMNE */
+      background-color: #0f172a !important; /* Główne tło aplikacji - ZAWSZE CIEMNE */
       color: #f8fafc !important;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       font-size: 14px;
@@ -75,7 +75,7 @@
     }
 
     .panel-box {
-      background: #1e293b; /* Ciemne panele narzędziowe */
+      background: #1e293b;
       border: 1px solid #334155;
       border-radius: 14px;
       padding: 12px;
@@ -114,7 +114,7 @@
     .btn-outline:hover { background: #1e293b; border-color: #475569; }
 
     .cad-grid {
-      background-color: #0b1120 !important; /* Tło schematu - CIEMNE */
+      background-color: #0b1120 !important; /* Tło schematu aplikacji - ZAWSZE CIEMNE */
       background-image:
         linear-gradient(to right, rgba(56, 189, 248, 0.06) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
@@ -127,7 +127,7 @@
     }
 
     .schematic-topbar {
-      background: #0f172a; /* Pasek nad schematem - CIEMNY */
+      background: #0f172a;
       border-bottom: 1px solid #1e293b;
       padding: 8px 12px;
       display: flex;
@@ -287,20 +287,15 @@
       font-weight: 700;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
     }
-
-    @media print {
-      .no-print { display: none !important; }
-      body { background: #ffffff !important; color: #000000 !important; }
-    }
   </style>
 </head>
 <body>
 
-  <header class="top-header no-print">
+  <header class="top-header">
     <div class="top-header-inner">
       <div class="brand-title">
-        <span class="brand-badge">MOLEX 43025</span>
-        <span>Generator Wiązek i Schematów Pinout</span>
+        <span class="brand-badge">MOLEX</span>
+        <span>Generator Wiązek i Schematów</span>
       </div>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button type="button" class="btn-emerald" onclick="openPreviewModal('sheet')">
@@ -310,7 +305,7 @@
     </div>
   </header>
 
-  <main class="main-container no-print">
+  <main class="main-container">
     <!-- PASEK TRYBU PRACY -->
     <section class="panel-box">
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-bottom:10px; border-bottom:1px solid #334155;">
@@ -356,7 +351,7 @@
       <div class="schematic-topbar">
         <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
           <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#38bdf8;"></span>
-          <span>RZUT CZOŁOWY GNIAZD MOLEX 43025 (2 RZĘDY) I SCHEMAT WIĄZKI</span>
+          <span>RZUT CZOŁOWY GNIAZD MOLEX I SCHEMAT WIĄZKI</span>
         </div>
 
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -406,14 +401,14 @@
         </div>
         <div class="grid-5">
           <div>
-            <label class="field-label" style="color:#38bdf8;">1. Złącze i Pin (Lewa - A)</label>
+            <label class="field-label" style="color:#38bdf8;">1. Złącze i Pin (Start)</label>
             <div style="display:flex; gap:6px;">
               <select id="quick-conn-a" onchange="populateQuickPinSelect('A')"></select>
               <select id="quick-pin-a" class="font-mono"></select>
             </div>
           </div>
           <div>
-            <label class="field-label" style="color:#34d399;">2. Złącze i Pin (Prawa - B)</label>
+            <label class="field-label" style="color:#34d399;">2. Złącze i Pin (Koniec)</label>
             <div style="display:flex; gap:6px;">
               <select id="quick-conn-b" onchange="populateQuickPinSelect('B')"></select>
               <select id="quick-pin-b" class="font-mono"></select>
@@ -503,7 +498,7 @@
             <button type="button" class="btn-sky" onclick="downloadVectorSVG()">📐 Wektor CAD (.SVG)</button>
             <button type="button" class="btn-purple" onclick="downloadStandaloneHTMLReport()">📄 Raport Offline (.HTML)</button>
             <button type="button" class="btn-amber" onclick="downloadCSVTable()">📊 Tabela Excel (.CSV)</button>
-            <button type="button" class="btn-outline" onclick="printToPDF()">🖨️ Drukuj / PDF (Jasne tło)</button>
+            <button type="button" class="btn-outline" onclick="printToPDF()">🖨️ Drukuj / PDF</button>
           </div>
         </div>
 
@@ -512,10 +507,10 @@
             <thead>
               <tr>
                 <th>Lp.</th>
-                <th>Złącze A (Lewa)</th>
-                <th>Pin A</th>
-                <th>Złącze B (Prawa)</th>
-                <th>Pin B</th>
+                <th>Złącze 1 (Start)</th>
+                <th>Pin 1</th>
+                <th>Złącze 2 (Koniec)</th>
+                <th>Pin 2</th>
                 <th>Kolor przewodu</th>
                 <th>Opis / Sygnał</th>
                 <th>Przekrój</th>
@@ -544,7 +539,7 @@
               📂 Wczytaj plik (.json)
               <input type="file" id="project-file-input" accept=".json,application/json,text/plain" onchange="handleProjectFileUpload(event)" class="hidden">
             </label>
-            <button type="button" class="btn-outline" onclick="copyProjectToClipboard()">📋 Skopiuj kod JSON (Obsidian)</button>
+            <button type="button" class="btn-outline" onclick="copyProjectToClipboard()">📋 Skopiuj kod JSON</button>
           </div>
         </div>
 
@@ -570,12 +565,12 @@
       <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; align-items:center; justify-content:space-between; background:#0b1120; padding:10px 12px; border-radius:10px; border:1px solid #1e293b;">
           <div>
-            <span style="font-size:10px; font-weight:800; color:#38bdf8; display:block;">STRONA A (LEWA)</span>
+            <span style="font-size:10px; font-weight:800; color:#38bdf8; display:block;">PUNKT STARTOWY</span>
             <strong id="modal-from-label" class="font-mono" style="font-size:14px;">J1 : Pin #1</strong>
           </div>
           <span style="font-size:18px; color:#475569;">↔</span>
           <div style="text-align:right;">
-            <span style="font-size:10px; font-weight:800; color:#34d399; display:block;">STRONA B (PRAWA)</span>
+            <span style="font-size:10px; font-weight:800; color:#34d399; display:block;">PUNKT KOŃCOWY</span>
             <strong id="modal-to-label" class="font-mono" style="font-size:14px;">J2 : Pin #1</strong>
           </div>
         </div>
@@ -625,7 +620,7 @@
   <div id="preview-modal" class="app-modal" onclick="handleBackdropClick(event, 'preview-modal')">
     <div class="modal-card modal-wide" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div style="font-weight:800; font-size:13px; color:#34d399;">💾 Centrum Zapisu i Eksportu (PC / Mac / Android / iPhone)</div>
+        <div style="font-weight:800; font-size:13px; color:#34d399;">💾 Centrum Zapisu i Eksportu</div>
         <button type="button" class="btn-sky" style="padding:5px 12px;" onclick="closeAllModals()">← Wróć do edytora</button>
       </div>
 
@@ -659,7 +654,7 @@
 
         <div style="display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid #334155;">
           <button type="button" onclick="printToPDF()" class="btn-outline">
-            🖨️ Drukuj lub Zapisz jako PDF (Białe tło)
+            🖨️ Drukuj lub Zapisz jako PDF (Jasne tło)
           </button>
         </div>
       </div>
@@ -737,7 +732,7 @@
 
   <script>
     const MOLEX_TYPES = [
-      { id: "microfit", name: "Molex Micro-Fit 3.0 (Seria 43025)", pitch: "3.00mm" },
+      { id: "microfit", name: "Molex Micro-Fit 3.0 (Seria 43025/43645)", pitch: "3.00mm" },
       { id: "minifit", name: "Molex Mini-Fit Jr. (Seria 5557)", pitch: "4.20mm" },
       { id: "nanofit", name: "Molex Nano-Fit (Seria 105308)", pitch: "2.50mm" },
       { id: "megafit", name: "Molex Mega-Fit (Seria 171692)", pitch: "5.70mm" },
@@ -747,7 +742,7 @@
     function getMolexCatalogPartNumber(conn) {
       const paddedPins = String(conn.pins || 8).padStart(2, '0');
       if (conn.type === 'microfit') {
-        const prefix = (conn.rows || 2) === 1 ? '43645' : '43025';
+        const prefix = Number(conn.rows || 2) === 1 ? '43645' : '43025';
         return `${prefix}-${paddedPins}00`;
       }
       if (conn.type === 'minifit') return `5557-${paddedPins}R`;
@@ -794,7 +789,7 @@
     let latestGeneratedDataUrl = null;
     let toastTimeout = null;
 
-    const STORAGE_KEY = 'molex_harness_clean_8pin_v1';
+    const STORAGE_KEY = 'molex_harness_clean_8pin_v2';
 
     function createMolexCavityPath(x, y, w, h, isKeyed, colIdx) {
       const bevel = 10;
@@ -865,7 +860,7 @@
       const housingsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
       const pinsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
       const wiresLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      const labelsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g"); // Warstwa etykiet na samej górze
+      const labelsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g"); // Tło i etykiety Z-Index
 
       const pinCoords = {};
 
@@ -876,7 +871,7 @@
       sideATitle.setAttribute("font-family", "sans-serif");
       sideATitle.setAttribute("font-size", "12");
       sideATitle.setAttribute("font-weight", "800");
-      sideATitle.textContent = "STRONA A (LEWA) – GNIAZDA MOLEX 43025";
+      sideATitle.textContent = "STRONA A (LEWA) – GNIAZDA MOLEX";
       topTitlesLayer.appendChild(sideATitle);
 
       const sideBTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -887,7 +882,7 @@
       sideBTitle.setAttribute("font-family", "sans-serif");
       sideBTitle.setAttribute("font-size", "12");
       sideBTitle.setAttribute("font-weight", "800");
-      sideBTitle.textContent = "STRONA B (PRAWA) – GNIAZDA MOLEX 43025";
+      sideBTitle.textContent = "STRONA B (PRAWA) – GNIAZDA MOLEX";
       topTitlesLayer.appendChild(sideBTitle);
 
       const cavW = 68;
@@ -899,11 +894,11 @@
       const connPaddingBottom = 16;
       const connGap = 40;
 
-      // NAPRAWIONY ALGORYTM RZĘDÓW: Złącza 1-rzędowe rosną prawidłowo w dół!
+      // Prawidłowe obliczanie rzędów (1-rzędowe rosną prawidłowo na wysokość)
       const getRowsCountForConnector = (c) => {
-        const numRows = c.rows || 2;
-        if (numRows === 1) return c.pins; 
-        return Math.ceil(c.pins / 2);
+        const numRows = Number(c.rows) || 2;
+        if (numRows === 1) return Number(c.pins); 
+        return Math.ceil(Number(c.pins) / 2);
       };
 
       let maxColumnBottomY = 420;
@@ -917,9 +912,9 @@
         connectorsList.forEach(conn => {
           const molexInfo = MOLEX_TYPES.find(t => t.id === conn.type) || MOLEX_TYPES[0];
           const partNumber = getMolexCatalogPartNumber(conn);
-          const isDual = (conn.rows || 2) === 2;
+          const isDual = Number(conn.rows || 2) === 2;
           const numRows = getRowsCountForConnector(conn);
-          const numCols = isDual ? (conn.pins > 1 ? 2 : 1) : 1;
+          const numCols = isDual ? (Number(conn.pins) > 1 ? 2 : 1) : 1;
 
           const gridTotalW = numCols === 2 ? (2 * cavW + cavGapX) : cavW;
           const gridTotalH = numRows * cavH + Math.max(0, numRows - 1) * cavGapY;
@@ -988,7 +983,7 @@
 
           const housingOuter = document.createElementNS("http://www.w3.org/2000/svg", "path");
           housingOuter.setAttribute("d", createMolex43025BodyPath(lX, tY, bW, bH));
-          housingOuter.setAttribute("fill", "#090d16"); // Ciemne tło gniazda
+          housingOuter.setAttribute("fill", "#090d16");
           housingOuter.setAttribute("stroke", primaryStroke);
           housingOuter.setAttribute("stroke-width", "2.6");
           housingGroup.appendChild(housingOuter);
@@ -1069,6 +1064,17 @@
             r2Label.setAttribute("font-weight", "700");
             r2Label.textContent = "▼ RZĄD 2";
             housingGroup.appendChild(r2Label);
+          } else {
+            const r1Single = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            r1Single.setAttribute("x", gridStartX + cavW / 2);
+            r1Single.setAttribute("y", tY + 60);
+            r1Single.setAttribute("text-anchor", "middle");
+            r1Single.setAttribute("fill", "#fde047");
+            r1Single.setAttribute("font-family", "monospace");
+            r1Single.setAttribute("font-size", "9");
+            r1Single.setAttribute("font-weight", "800");
+            r1Single.textContent = "▼ RZĄD 1 (PIN 1..N)";
+            housingGroup.appendChild(r1Single);
           }
 
           housingsLayer.appendChild(housingGroup);
@@ -1107,12 +1113,13 @@
               cavY,
               colIdx,
               rowIdx,
-              numCols
+              numCols,
+              side
             };
 
             const isSelected = selectedPin && selectedPin.side === side && selectedPin.connId === conn.id && selectedPin.pin === pin;
             const connectedWires = state.wires.filter(w =>
-              side === 'A' ? (w.fromConnId === conn.id && w.fromPin === pin) : (w.toConnId === conn.id && w.toPin === pin)
+              (w.fromConnId === conn.id && w.fromPin === pin) || (w.toConnId === conn.id && w.toPin === pin)
             );
             const isConnected = connectedWires.length > 0;
             const primaryWire = isConnected ? connectedWires[0] : null;
@@ -1141,7 +1148,7 @@
               ? "#451a03"
               : (customPin && customPin.fillColor
                   ? hexToRgba(customPin.fillColor, 0.34)
-                  : (isConnected ? "#111c33" : "#0b1324")); // Ciemne wypełnienie wolnych komór
+                  : (isConnected ? "#111c33" : "#0b1324"));
 
             const resolvedTerminalFill = (customPin && customPin.fillColor)
               ? customPin.fillColor
@@ -1220,12 +1227,12 @@
           }
 
           currentY += boxHeight + connGap;
-        }); // END connectorsList.forEach
+        });
 
         if (currentY + 20 > maxColumnBottomY) {
           maxColumnBottomY = currentY + 20;
         }
-      }; // END drawConnectorColumn
+      };
 
       drawConnectorColumn(state.connectorsA, 'A');
       drawConnectorColumn(state.connectorsB, 'B');
@@ -1238,8 +1245,9 @@
       const placedLabels = [];
 
       state.wires.forEach((w, idx) => {
-        const ptA = pinCoords[`A_${w.fromConnId}_${w.fromPin}`];
-        const ptB = pinCoords[`B_${w.toConnId}_${w.toPin}`];
+        const getPinPt = (connId, pin) => pinCoords[`A_${connId}_${pin}`] || pinCoords[`B_${connId}_${pin}`];
+        const ptA = getPinPt(w.fromConnId, w.fromPin);
+        const ptB = getPinPt(w.toConnId, w.toPin);
         if (!ptA || !ptB) return;
 
         const x1 = ptA.x + 13;
@@ -1247,14 +1255,34 @@
         const x2 = ptB.x + 13;
         const y2 = ptB.y - 11;
 
-        const outerRowShiftA = (ptA.numCols === 2 && ptA.colIdx === 0) ? -14 : 6;
-        const outerRowShiftB = (ptB.numCols === 2 && ptB.colIdx === 1) ? 14 : -6;
+        let cx1, cy1, cx2, cy2;
         const spreadOffset = ((idx % 7) - 3) * 14;
 
-        const cx1 = x1 + (x2 - x1) * 0.34 + spreadOffset;
-        const cy1 = y1 + outerRowShiftA;
-        const cx2 = x1 + (x2 - x1) * 0.66 + spreadOffset;
-        const cy2 = y2 + outerRowShiftB;
+        // Logika wypychająca pętlę na zewnątrz, jeśli łączymy piny po tej samej stronie
+        if (ptA.side === 'A' && ptB.side === 'A') {
+          const maxX = Math.max(x1, x2);
+          cx1 = maxX + 80 + Math.abs(spreadOffset) * 2;
+          cx2 = cx1;
+          cy1 = y1 - 20;
+          cy2 = y2 + 20;
+        } else if (ptA.side === 'B' && ptB.side === 'B') {
+          const minX = Math.min(x1, x2);
+          cx1 = minX - 80 - Math.abs(spreadOffset) * 2;
+          cx2 = cx1;
+          cy1 = y1 - 20;
+          cy2 = y2 + 20;
+        } else {
+          // Standardowe łączenie między A i B
+          const outerRowShiftA = (ptA.numCols === 2 && ptA.colIdx === 0) ? -14 : 6;
+          const outerRowShiftB = (ptB.numCols === 2 && ptB.colIdx === 1) ? 14 : -6;
+          const dirMult = ptA.x < ptB.x ? 1 : -1;
+          
+          cx1 = x1 + (x2 - x1) * 0.34 + spreadOffset * dirMult;
+          cy1 = y1 + outerRowShiftA;
+          cx2 = x1 + (x2 - x1) * 0.66 + spreadOffset * dirMult;
+          cy2 = y2 + outerRowShiftB;
+        }
+        
         const d = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
 
         const wireGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1282,7 +1310,6 @@
 
         wiresLayer.appendChild(wireGroup);
 
-        // Algorytm antykolizyjny dla etykiet na samej górze
         const labelGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
         labelGroup.style.cursor = "pointer";
         
@@ -1440,7 +1467,6 @@
       clone.setAttribute("width", svgW);
       clone.setAttribute("height", svgH);
 
-      // Usunięto dodawanie bgRect przed konwersją, aby regex go nie nadpisał
       let xml = new XMLSerializer().serializeToString(clone);
       
       xml = xml.replace(/fill="#ffffff"/gi, 'fill="TMP_DARK"')
@@ -1462,7 +1488,7 @@
                .replace(/stroke="#020617"/gi, 'stroke="#e2e8f0"')
                .replace(/fill="rgba\(15, 23, 42,/gi, 'fill="rgba(255, 255, 255,'); 
 
-      // Wstrzyknięcie tła po zmianach kolorów, by uniknąć jego zamiany na ciemne!
+      // Gwarantujemy czysto białe tło dla wyeksportowanego pliku i wydruku PDF
       const bgRect = `<rect x="0" y="0" width="${svgW}" height="${svgH}" fill="#ffffff" />`;
       xml = xml.replace(/(<svg[^>]*>)/i, `$1${bgRect}`);
 
@@ -1538,10 +1564,10 @@
           ctx.font = "bold 10px sans-serif";
           const cols = [
             { x: padX + 10, label: "LP." },
-            { x: padX + 55, label: "ZŁĄCZE A (LEWA)" },
-            { x: padX + 220, label: "PIN A" },
-            { x: padX + 300, label: "ZŁĄCZE B (PRAWA)" },
-            { x: padX + 465, label: "PIN B" },
+            { x: padX + 55, label: "ZŁĄCZE 1 (START)" },
+            { x: padX + 220, label: "PIN 1" },
+            { x: padX + 300, label: "ZŁĄCZE 2 (KONIEC)" },
+            { x: padX + 465, label: "PIN 2" },
             { x: padX + 545, label: "KOLOR PRZEWODU" },
             { x: padX + 700, label: "OPIS / SYGNAŁ" },
             { x: padX + 835, label: "PRZEKRÓJ" }
@@ -1563,8 +1589,9 @@
               ctx.fillRect(padX, curY, tableW, rowH);
               ctx.strokeRect(padX, curY, tableW, rowH);
 
-              const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-              const cB = state.connectorsB.find(c => c.id === w.toConnId);
+              const allConns = [...state.connectorsA, ...state.connectorsB];
+              const cA = allConns.find(c => c.id === w.fromConnId);
+              const cB = allConns.find(c => c.id === w.toConnId);
 
               ctx.fillStyle = "#64748b";
               ctx.font = "11px monospace";
@@ -1674,11 +1701,12 @@
 
     async function downloadCSVTable() {
       const lines = [];
-      lines.push(["Lp", "Zlacze_Lewa_A", "Part_Number_A", "Pin_A", "Zlacze_Prawa_B", "Part_Number_B", "Pin_B", "Kolor_Przewodu", "Kod_HEX", "Opis_Sygnalu", "Przekroj_AWG"].join(";"));
+      lines.push(["Lp", "Zlacze_1_Start", "Part_Number_1", "Pin_1", "Zlacze_2_Koniec", "Part_Number_2", "Pin_2", "Kolor_Przewodu", "Kod_HEX", "Opis_Sygnalu", "Przekroj_AWG"].join(";"));
 
       state.wires.forEach((w, idx) => {
-        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-        const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        const cA = allConns.find(c => c.id === w.fromConnId);
+        const cB = allConns.find(c => c.id === w.toConnId);
         const row = [
           idx + 1,
           cA ? cA.name : "A",
@@ -1719,12 +1747,81 @@
       await saveBlobUniversal(blob, fileName, 'text/csv', 'Tabela Montażowa CSV (Excel)');
     }
 
-    function getHTMLReportContent() {
+    function getHTMLReportString() {
       const lightSvg = getLightThemeSVGBlob();
       const svgHtml = lightSvg ? lightSvg.xml : '';
       const rowsHtml = state.wires.map((w, i) => {
         const cA = state.connectorsA.find(c => c.id === w.fromConnId);
         const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        return `<tr>
+          <td>${i + 1}</td>
+          <td><b>${cA ? cA.name : '?'}</b> (${cA ? getMolexCatalogPartNumber(cA) : ''})</td>
+          <td><b>Pin ${w.fromPin}</b></td>
+          <td><b>${cB ? cB.name : '?'}</b> (${cB ? getMolexCatalogPartNumber(cB) : ''})</td>
+          <td><b>Pin ${w.toPin}</b></td>
+          <td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${w.color};vertical-align:middle;margin-right:6px;border:1px solid #cbd5e1;"></span>${w.colorName}</td>
+          <td style="color:#d97706;font-family:monospace;font-weight:bold;">${w.signal || '-'}</td>
+          <td>${w.awg}</td>
+        </tr>`;
+      }).join('');
+
+      return `<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentacja Wiązki Molex – ${getSanitizedBaseFilename()}</title>
+<style>
+  body { background:#ffffff; color:#0f172a; font-family:system-ui,-apple-system,sans-serif; margin:0; padding:20px; }
+  .wrap { max-width:1100px; margin:0 auto; }
+  h1 { font-size:20px; color:#0284c7; margin-bottom:4px; }
+  .sub { font-size:12px; color:#64748b; margin-bottom:16px; }
+  .svg-box { background:#ffffff; border:2px solid #cbd5e1; border-radius:14px; padding:12px; overflow-x:auto; margin-bottom:24px; }
+  svg { width:100%; height:auto; display:block; }
+  table { width:100%; border-collapse:collapse; font-size:13px; background:#ffffff; border-radius:10px; overflow:hidden; border:1px solid #cbd5e1; }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid #cbd5e1; }
+  th { background:#f1f5f9; color:#334155; font-size:11px; text-transform:uppercase; border-bottom:2px solid #cbd5e1; }
+  @media print { 
+    @page { size: landscape; margin: 10mm; }
+    body { padding:0; } 
+    .svg-box { border-color:#000; border-width:1px; } 
+    table { border-color:#000; } 
+    th, td { border-color:#000; color:#000; }
+    th { background:#f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Dokumentacja Schematu Wiązki Molex (Seria 43025)</h1>
+    <div class="sub">Wygenerowano: ${new Date().toLocaleString('pl-PL')}</div>
+    <div class="svg-box">${svgHtml}</div>
+    <h2>Tabela Połączeń Przewodowych (Wire Run List)</h2>
+    <table>
+      <thead>
+        <tr><th>Lp.</th><th>Złącze Lewa (A)</th><th>Pin A</th><th>Złącze Prawa (B)</th><th>Pin B</th><th>Kolor przewodu</th><th>Opis / Sygnał</th><th>Przekrój</th></tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+  </div>
+</body>
+</html>`;
+    }
+
+    async function downloadStandaloneHTMLReport() {
+      const reportHtml = getHTMLReportString();
+      const blob = new Blob([reportHtml], { type: "text/html;charset=utf-8" });
+      const fileName = `${getSanitizedBaseFilename()}.html`;
+      await saveBlobUniversal(blob, fileName, 'text/html', 'Dokumentacja HTML Offline');
+    }
+
+    function getHTMLReportContent() {
+      const lightSvg = getLightThemeSVGBlob();
+      const svgHtml = lightSvg ? lightSvg.xml : '';
+      const rowsHtml = state.wires.map((w, i) => {
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        const cA = allConns.find(c => c.id === w.fromConnId);
+        const cB = allConns.find(c => c.id === w.toConnId);
         return `<tr>
           <td style="padding:8px; border:1px solid #cbd5e1;">${i + 1}</td>
           <td style="padding:8px; border:1px solid #cbd5e1;"><b>${cA ? cA.name : '?'}</b> (${cA ? getMolexCatalogPartNumber(cA) : ''})</td>
@@ -1738,24 +1835,24 @@
       }).join('');
 
       return `
-        <div class="wrap" style="max-width:1100px; margin:0 auto; background:#ffffff; color:#0f172a; font-family:sans-serif; padding:20px;">
-          <h1 style="font-size:20px; color:#0284c7; margin-bottom:4px;">Dokumentacja Schematu Wiązki Molex</h1>
+        <div id="print-only-container" style="max-width:1100px; margin:0 auto; font-family:sans-serif; padding:20px; background:#ffffff !important; color:#0f172a !important;">
+          <h1 style="font-size:20px; color:#0284c7; margin-bottom:4px;">Dokumentacja Schematu Wiązki Molex (Seria 43025)</h1>
           <div style="font-size:12px; color:#64748b; margin-bottom:16px;">Wygenerowano: ${new Date().toLocaleString('pl-PL')}</div>
-          <div class="svg-box" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:24px;">
+          <div style="background:#ffffff !important; border:2px solid #cbd5e1; border-radius:14px; padding:12px; overflow-x:auto; margin-bottom:24px;">
             ${svgHtml}
           </div>
-          <h2 style="font-size:16px; margin-bottom:8px;">Tabela Połączeń Przewodowych</h2>
-          <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #cbd5e1;">
+          <h2 style="font-size:16px; margin-bottom:8px;">Tabela Połączeń Przewodowych (Wire Run List)</h2>
+          <table style="width:100%; border-collapse:collapse; font-size:13px; background:#ffffff !important; border:1px solid #cbd5e1; color:#000000 !important;">
             <thead>
               <tr style="background:#f1f5f9;">
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Lp.</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Złącze Lewa (A)</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Pin A</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Złącze Prawa (B)</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Pin B</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Kolor przewodu</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Opis / Sygnał</th>
-                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Przekrój</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Lp.</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Złącze 1 (Start)</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Pin 1</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Złącze 2 (Koniec)</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Pin 2</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Kolor przewodu</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Opis / Sygnał</th>
+                <th style="padding:10px 12px; text-align:left; border:1px solid #cbd5e1;">Przekrój</th>
               </tr>
             </thead>
             <tbody>${rowsHtml}</tbody>
@@ -1764,76 +1861,44 @@
       `;
     }
 
-    function getHTMLReportString() {
-      return `<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dokumentacja Wiązki Molex – ${getSanitizedBaseFilename()}</title>
-</head>
-<body style="background:#ffffff; margin:0;">
-  ${getHTMLReportContent()}
-</body>
-</html>`;
-    }
-
-    async function downloadStandaloneHTMLReport() {
-      const reportHtml = getHTMLReportString();
-      const blob = new Blob([reportHtml], { type: "text/html;charset=utf-8" });
-      const fileName = `${getSanitizedBaseFilename()}.html`;
-      await saveBlobUniversal(blob, fileName, 'text/html', 'Dokumentacja HTML Offline');
-    }
-
     function printToPDF() {
-      // Pobierz czysty kontener HTML wydruku (z odwróconymi kolorami - białe tło)
       const reportHtml = getHTMLReportContent();
       
-      // Przygotuj tymczasowy kontener bezpośrednio w obecnym dokumencie (zamiast zawodnego iframe)
-      let printContainer = document.getElementById('temp-print-container');
-      if (printContainer) printContainer.remove();
-      
-      printContainer = document.createElement('div');
-      printContainer.id = 'temp-print-container';
-      printContainer.innerHTML = reportHtml;
-      document.body.appendChild(printContainer);
-      
-      // Dodaj reguły CSS ukrywające resztę aplikacji podczas druku
-      let printStyle = document.getElementById('temp-print-style');
-      if (printStyle) printStyle.remove();
-      
-      printStyle = document.createElement('style');
-      printStyle.id = 'temp-print-style';
-      printStyle.innerHTML = `
-        @media screen {
-          /* Na ekranie komputera ten kontener jest całkowicie niewidoczny */
-          #temp-print-container { display: none !important; }
+      let container = document.getElementById('temp-print-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'temp-print-container';
+        document.body.appendChild(container);
+      }
+      container.innerHTML = reportHtml;
+
+      let style = document.getElementById('temp-print-style');
+      if (!style) {
+        style = document.createElement('style');
+        style.id = 'temp-print-style';
+        style.innerHTML = `
+          @media screen {
+            #temp-print-container { display: none !important; }
+          }
+          @media print {
+            body > *:not(#temp-print-container):not(style):not(script) { display: none !important; }
+            body, html { background-color: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; }
+            #temp-print-container { display: block !important; width: 100% !important; background-color: #ffffff !important; color: #000000 !important; }
+            table, th, td { border: 1px solid #000000 !important; color: #000000 !important; }
+            th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            @page { size: landscape; margin: 10mm; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      setTimeout(() => {
+        try {
+          window.print();
+        } catch(e) {
+          showToast("Przeglądarka zablokowała wywołanie druku.");
         }
-        @media print {
-          /* Ukryj caly ciemny interfejs programu na czas tworzenia PDF */
-          body > *:not(#temp-print-container):not(style):not(script) { 
-            display: none !important; 
-          }
-          /* Wymuś idealnie białe tło i czarne ramy dla druku */
-          body, html { 
-            background-color: #ffffff !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-          }
-          #temp-print-container { 
-            display: block !important; 
-            width: 100% !important; 
-          }
-          .svg-box { border: 1px solid #000000 !important; }
-          table, th, td { border: 1px solid #000000 !important; color: #000000 !important; }
-          th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          @page { size: landscape; margin: 10mm; }
-        }
-      `;
-      document.head.appendChild(printStyle);
-      
-      // Bezpośrednie wywołanie systemowego okna. Dzięki @media print zadziała bez blokad pop-up na każdym urządzeniu!
-      window.print();
+      }, 150);
     }
 
     async function saveProjectUniversalJSON() {
@@ -1981,7 +2046,7 @@
 
       if (interactionMode === 'pin') {
         if (pill) pill.classList.add('hidden');
-        if (title) title.textContent = "Tryb edycji pojedynczego pinu: Dotknij dowolny pin na schemacie, aby nadać mu opis lub kolor";
+        if (title) title.textContent = "Tryb edycji pojedynczego pinu: Dotknij dowol pin na schemacie, aby nadać mu opis lub kolor";
         return;
       }
 
@@ -1990,10 +2055,10 @@
         const c = allConns.find(x => x.id === selectedPin.connId);
         if (nameEl) nameEl.textContent = `${c ? c.name : selectedPin.connId}: Pin #${selectedPin.pin}`;
         if (pill) pill.classList.remove('hidden');
-        if (title) title.textContent = `Wybrano ${c ? c.name : ''}: Pin #${selectedPin.pin}. Dotknij teraz pin po drugiej stronie, aby połączyć przewodem!`;
+        if (title) title.textContent = `Wybrano ${c ? c.name : ''}: Pin #${selectedPin.pin}. Dotknij teraz pin po drugiej stronie (lub na tej samej wtyczce), aby połączyć!`;
       } else {
         if (pill) pill.classList.add('hidden');
-        if (title) title.textContent = "Jak łączyć piny: Dotknij pin po lewej (Strona A), a potem pin po prawej (Strona B)";
+        if (title) title.textContent = "Jak łączyć piny: Dotknij pierwszy pin, a następnie docelowy pin (również na tej samej wtyczce)";
       }
     }
 
@@ -2022,24 +2087,19 @@
         openSinglePinModal(s.side, s.connId, s.pin);
         return;
       }
-      if (selectedPin.side === side) {
-        selectedPin = { side, connId, pin };
-        updateStatusBanner();
-        renderSchematicSVG();
-        return;
-      }
 
-      const fromConnId = (selectedPin.side === 'A') ? selectedPin.connId : connId;
-      const fromPin = (selectedPin.side === 'A') ? selectedPin.pin : pin;
-      const toConnId = (selectedPin.side === 'B') ? selectedPin.connId : connId;
-      const toPin = (selectedPin.side === 'B') ? selectedPin.pin : pin;
+      const fromConnId = selectedPin.connId;
+      const fromPin = selectedPin.pin;
+      const toConnId = connId;
+      const toPin = pin;
 
       selectedPin = null;
       updateStatusBanner();
       renderSchematicSVG();
 
       const existingWire = state.wires.find(w =>
-        w.fromConnId === fromConnId && w.fromPin === fromPin && w.toConnId === toConnId && w.toPin === toPin
+        (w.fromConnId === fromConnId && w.fromPin === fromPin && w.toConnId === toConnId && w.toPin === toPin) ||
+        (w.fromConnId === toConnId && w.fromPin === toPin && w.toConnId === fromConnId && w.toPin === fromPin)
       );
       openWireConfigModal(fromConnId, fromPin, toConnId, toPin, existingWire || null);
     }
@@ -2054,8 +2114,9 @@
     }
 
     function openWireConfigModal(fromConnId, fromPin, toConnId, toPin, existingWire = null) {
-      const cA = state.connectorsA.find(c => c.id === fromConnId);
-      const cB = state.connectorsB.find(c => c.id === toConnId);
+      const allConns = [...state.connectorsA, ...state.connectorsB];
+      const cA = allConns.find(c => c.id === fromConnId);
+      const cB = allConns.find(c => c.id === toConnId);
       const defaultColor = WIRE_COLORS[state.wires.length % WIRE_COLORS.length];
 
       modalContext = {
@@ -2328,16 +2389,27 @@
       const selConnB = document.getElementById('quick-conn-b');
       const selColor = document.getElementById('quick-color');
 
+      const allOptionsHtml = `
+        <optgroup label="STRONA A (Lewa)">
+          ${state.connectorsA.map(c => `<option value="${c.id}">${c.name} (${c.pins}-pin)</option>`).join('')}
+        </optgroup>
+        <optgroup label="STRONA B (Prawa)">
+          ${state.connectorsB.map(c => `<option value="${c.id}">${c.name} (${c.pins}-pin)</option>`).join('')}
+        </optgroup>
+      `;
+
       if (selConnA) {
         const prevA = selConnA.value;
-        selConnA.innerHTML = state.connectorsA.map(c => `<option value="${c.id}">${c.name} (${c.pins}-pin)</option>`).join('');
-        if (state.connectorsA.some(c => c.id === prevA)) selConnA.value = prevA;
+        selConnA.innerHTML = allOptionsHtml;
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        if (allConns.some(c => c.id === prevA)) selConnA.value = prevA;
         populateQuickPinSelect('A');
       }
       if (selConnB) {
         const prevB = selConnB.value;
-        selConnB.innerHTML = state.connectorsB.map(c => `<option value="${c.id}">${c.name} (${c.pins}-pin)</option>`).join('');
-        if (state.connectorsB.some(c => c.id === prevB)) selConnB.value = prevB;
+        selConnB.innerHTML = allOptionsHtml;
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        if (allConns.some(c => c.id === prevB)) selConnB.value = prevB;
         populateQuickPinSelect('B');
       }
       if (selColor && selColor.options.length === 0) {
@@ -2349,8 +2421,8 @@
       const connSel = document.getElementById(side === 'A' ? 'quick-conn-a' : 'quick-conn-b');
       const pinSel = document.getElementById(side === 'A' ? 'quick-pin-a' : 'quick-pin-b');
       if (!connSel || !pinSel) return;
-      const list = side === 'A' ? state.connectorsA : state.connectorsB;
-      const conn = list.find(c => c.id === connSel.value) || list[0];
+      const allConns = [...state.connectorsA, ...state.connectorsB];
+      const conn = allConns.find(c => c.id === connSel.value) || allConns[0];
       if (!conn) return;
       let html = '';
       for (let p = 1; p <= conn.pins; p++) html += `<option value="${p}">Pin #${p}</option>`;
@@ -2393,8 +2465,9 @@
         return;
       }
       container.innerHTML = state.wires.map(w => {
-        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-        const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        const cA = allConns.find(c => c.id === w.fromConnId);
+        const cB = allConns.find(c => c.id === w.toConnId);
         return `<div onclick="openWireConfigModal('${w.fromConnId}', ${w.fromPin}, '${w.toConnId}', ${w.toPin}, state.wires.find(x=>x.id==='${w.id}'))"
           style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
@@ -2468,8 +2541,8 @@
               <div>
                 <label class="field-label">Rzędy</label>
                 <select onchange="updateConnectorField('${side}', '${conn.id}', 'rows', Number(this.value))">
-                  <option value="2" ${(conn.rows || 2) === 2 ? 'selected' : ''}>2 Rzędy (43025)</option>
-                  <option value="1" ${(conn.rows || 2) === 1 ? 'selected' : ''}>1 Rząd (43645)</option>
+                  <option value="2" ${(Number(conn.rows) || 2) === 2 ? 'selected' : ''}>2 Rzędy (43025)</option>
+                  <option value="1" ${(Number(conn.rows) || 2) === 1 ? 'selected' : ''}>1 Rząd (43645)</option>
                 </select>
               </div>
             </div>
@@ -2506,7 +2579,8 @@
       const list = side === 'A' ? state.connectorsA : state.connectorsB;
       const conn = list.find(c => c.id === connId);
       if (!conn) return;
-      if (field === 'pins') value = Math.max(2, Math.min(24, value || 8));
+      if (field === 'pins') value = Math.max(2, Math.min(24, Number(value) || 8));
+      if (field === 'rows') value = Number(value);
       conn[field] = value;
       renderAll();
     }
@@ -2519,8 +2593,9 @@
         return;
       }
       tbody.innerHTML = state.wires.map((w, idx) => {
-        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-        const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        const cA = allConns.find(c => c.id === w.fromConnId);
+        const cB = allConns.find(c => c.id === w.toConnId);
         return `<tr>
           <td class="font-mono">${idx + 1}.</td>
           <td><strong style="color:#38bdf8;">${cA ? cA.name : 'A'}</strong></td>
