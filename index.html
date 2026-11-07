@@ -3,247 +3,431 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>Generator Wiązek Molex – Schemat i Pinout</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>Generator Wiązek Molex 43025 – Schemat i Pinout</title>
   <style>
     * {
-      -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
+
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
-      min-height: 100%;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #0f172a;
-      color: #f8fafc;
+      min-height: 100vh;
+      background-color: #0f172a !important; /* Główne tło - CIEMNE */
+      color: #f8fafc !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
       overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
+
     .font-mono {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
     }
-    /* Tło siatki inżynieryjnej dla schematu */
+
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .top-header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .brand-badge {
+      display: inline-block;
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .main-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px;
+      padding-bottom: 80px;
+    }
+
+    .panel-box {
+      background: #1e293b; /* Ciemne panele narzędziowe */
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    button, .btn-label {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-sky { background: #0284c7; color: #ffffff; }
+    .btn-sky:hover { background: #0369a1; }
+    .btn-emerald { background: #059669; color: #ffffff; }
+    .btn-emerald:hover { background: #047857; }
+    .btn-purple { background: #7c3aed; color: #ffffff; }
+    .btn-purple:hover { background: #6d28d9; }
+    .btn-amber { background: #d97706; color: #ffffff; }
+    .btn-amber:hover { background: #b45309; }
+    .btn-rose { background: #be123c; color: #ffffff; border-color: #9f1239; }
+    .btn-rose:hover { background: #9f1239; }
+    .btn-outline { background: #0f172a; color: #f8fafc; border-color: #334155; }
+    .btn-outline:hover { background: #1e293b; border-color: #475569; }
+
     .cad-grid {
-      background-color: #0b1120;
-      background-image: 
+      background-color: #0b1120 !important; /* Tło schematu - CIEMNE */
+      background-image:
         linear-gradient(to right, rgba(56, 189, 248, 0.06) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
       background-size: 20px 20px;
+      border: 2px solid #1e293b;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
-    /* Animacje dla ścieżek i pinów */
-    .wire-path {
-      transition: stroke-width 0.15s ease, opacity 0.15s ease;
-      cursor: pointer;
+
+    .schematic-topbar {
+      background: #0f172a; /* Pasek nad schematem - CIEMNY */
+      border-bottom: 1px solid #1e293b;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      color: #f8fafc;
     }
-    .wire-path:hover {
-      stroke-width: 6px !important;
-      opacity: 1 !important;
+
+    #harness-svg {
+      width: 100%;
+      height: auto;
+      min-height: 340px;
+      display: block;
+      background: transparent;
+      user-select: none;
     }
-    .pin-node {
-      cursor: pointer;
+
+    .pin-node, .wire-path { cursor: pointer; }
+
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: #0f172a;
+      padding: 6px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      border: 1px solid #1e293b;
     }
-    /* Bezpieczne ukrywanie modali na iOS Safari */
+
+    .tab-btn {
+      padding: 10px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 12px;
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+    }
+    .tab-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0369a1;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.4);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 10px; }
+
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    label.field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      background: #1e293b;
+    }
+
+    table.wire-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    table.wire-table th {
+      background: #0f172a;
+      color: #bae6fd;
+      padding: 9px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    table.wire-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #334155;
+      color: #f8fafc;
+    }
+
     .app-modal {
       display: none;
-      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.8);
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      overflow-y: auto;
     }
-    .app-modal.is-open {
+    .app-modal.is-open { display: flex; }
+
+    .modal-card {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 2px solid #1e293b;
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      margin: auto;
+    }
+    .modal-card.modal-wide { max-width: 860px; }
+
+    .modal-header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 14px;
       display: flex;
-      pointer-events: auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid #334155;
     }
+
+    .modal-body { padding: 14px; }
+    .hidden { display: none !important; }
+
+    #toast-box {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: #0f172a;
+      color: #ffffff;
+      border: 2px solid #0284c7;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+
     @media print {
-      body {
-        background: #ffffff !important;
-        color: #000000 !important;
-      }
-      .no-print {
-        display: none !important;
-      }
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; color: #000000 !important; }
     }
   </style>
 </head>
-<body class="pb-24">
+<body>
 
-  <!-- STAŁY PASEK GÓRNY (Zawsze widoczny przycisk powrotu do Strony Głównej / Schematu) -->
-  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-3 py-2.5 shadow-lg no-print">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
-      <!-- Przycisk Strona Główna / Reset widoku -->
-      <button type="button" onclick="goHomeView()" class="flex items-center gap-2 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs sm:text-sm shadow-md transition">
-        <i class="fa-solid fa-house"></i>
-        <span>Strona główna (Schemat)</span>
-      </button>
-
-      <!-- Szybkie akcje prawej strony -->
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <button type="button" onclick="openPreviewModal('sheet')" class="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow-md">
-          <i class="fa-solid fa-floppy-disk"></i>
-          <span>Zapisz / Eksportuj (PC i Telefon)</span>
+  <header class="top-header no-print">
+    <div class="top-header-inner">
+      <div class="brand-title">
+        <span class="brand-badge">MOLEX 43025</span>
+        <span>Generator Wiązek i Schematów Pinout</span>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn-emerald" onclick="openPreviewModal('sheet')">
+          💾 Zapisz / Eksportuj (PC i Telefon)
         </button>
       </div>
     </div>
   </header>
 
-  <!-- GŁÓWNY KONTENER STRONY -->
-  <main id="main-home-container" class="max-w-7xl mx-auto px-2.5 sm:px-4 pt-3 space-y-4 no-print">
-
-    <!-- PRZEŁĄCZNIK TRYBU KLIKANIA NA SCHEMACIE + PASEK STATUSU -->
-    <section id="status-banner" class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3 shadow-md space-y-2.5">
-      <!-- Przełącznik trybu: Łączenie przewodów vs Edycja pojedynczego pinu -->
-      <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-700/80">
-        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-          <i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
-          <span>Tryb działania po dotknięciu pinu na schemacie:</span>
-        </span>
-        <div class="grid grid-cols-2 gap-1.5 w-full sm:w-auto bg-slate-900 p-1 rounded-xl border border-slate-700">
-          <button type="button" id="mode-wire-btn" onclick="setInteractionMode('wire')" class="px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-sky-600 text-white shadow transition">
-            <i class="fa-solid fa-link"></i>
-            <span>Łącz przewody (Lewa ↔ Prawa)</span>
+  <main class="main-container no-print">
+    <!-- PASEK TRYBU PRACY -->
+    <section class="panel-box">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-bottom:10px; border-bottom:1px solid #334155;">
+        <div style="font-weight:800; font-size:13px; color:#f8fafc;">
+          ⚡ Tryb działania po dotknięciu pinu na schemacie:
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button type="button" id="mode-wire-btn" class="btn-sky" onclick="setInteractionMode('wire')">
+            🔗 Łącz przewody (Lewa ↔ Prawa)
           </button>
-          <button type="button" id="mode-pin-btn" onclick="setInteractionMode('pin')" class="px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition">
-            <i class="fa-solid fa-palette"></i>
-            <span>Pojedynczy pin (Opis i Kolor)</span>
+          <button type="button" id="mode-pin-btn" class="btn-outline" onclick="setInteractionMode('pin')">
+            🎨 Pojedynczy pin (Opis i Kolor)
           </button>
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-        <div class="flex items-center gap-2.5">
-          <div id="status-icon-box" class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 shrink-0">
-            <i class="fa-solid fa-hand-pointer text-base"></i>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; padding-top:10px;">
+        <div>
+          <div id="status-title" style="font-weight:800; font-size:13px; color:#38bdf8;">
+            Jak łączyć piny: Dotknij pin po lewej (Strona A), a potem pin po prawej (Strona B)
           </div>
-          <div>
-            <div id="status-title" class="text-xs sm:text-sm font-bold text-white">
-              Jak łączyć piny: Dotknij pin po lewej (Strona A), a potem pin po prawej (Strona B)
-            </div>
-            <div id="status-subtitle" class="text-[11px] text-slate-300">
-              Możesz też dotknąć ten sam pin drugi raz (lub przełączyć tryb wyżej), aby ustawić <b>opis pinu, kolor obrysu i kolor pinu</b>.
-            </div>
+          <div id="status-subtitle" style="font-size:12px; color:#94a3b8; margin-top:2px;">
+            Możesz też dotknąć ten sam pin drugi raz (lub przełączyć tryb wyżej), aby ustawić <b>opis pinu, kolor obrysu i kolor pinu</b>.
           </div>
         </div>
 
-        <!-- Aktywny badge podczas wyboru pierwszego pinu + przycisk edycji pojedynczego pinu -->
-        <div id="active-pin-pill" class="hidden flex-wrap items-center gap-2 bg-amber-500/20 border border-amber-400/50 text-amber-200 px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 w-full sm:w-auto justify-between sm:justify-start">
-          <span class="flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-            Wybrano: <strong id="active-pin-name" class="font-mono text-white">J1: Pin 1</strong>
+        <div id="active-pin-pill" class="hidden" style="background:#451a03; border:1px solid #d97706; padding:6px 10px; border-radius:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="font-size:12px; font-weight:700; color:#fde047;">
+            Wybrano: <strong id="active-pin-name" class="font-mono">J1: Pin 1</strong>
           </span>
-          <div class="flex items-center gap-1.5">
-            <button type="button" onclick="openSinglePinModalForSelected()" class="bg-purple-600 hover:bg-purple-500 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold shadow flex items-center gap-1">
-              <i class="fa-solid fa-palette"></i> Opis / Kolor pinu
-            </button>
-            <button type="button" onclick="cancelPinSelection()" class="bg-amber-500/30 hover:bg-amber-500/50 text-white px-2 py-1 rounded-lg text-[11px] font-bold">
-              Anuluj ✕
-            </button>
-          </div>
+          <button type="button" class="btn-purple" style="padding:5px 9px; font-size:11px;" onclick="openSinglePinModalForSelected()">
+            🎨 Opis / Kolor pinu
+          </button>
+          <button type="button" class="btn-outline" style="padding:5px 9px; font-size:11px;" onclick="cancelPinSelection()">
+            Anuluj ✕
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- INTERAKTYWNY SCHEMAT GRAFICZNY WIĄZKI (SVG) -->
-    <section id="schematic-section" class="cad-grid rounded-2xl border border-slate-700/90 shadow-2xl overflow-hidden relative">
-      <!-- Mini pasek nad schematem -->
-      <div class="bg-slate-900/90 border-b border-slate-800 px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-          <span class="font-bold text-slate-200 uppercase tracking-wider text-[11px]">Rzut Gniazd Molex (2 Rzędy) i Schemat Wiązki</span>
+    <!-- SCHEMAT GRAFICZNY WIĄZKI - CIEMNY MOTYW -->
+    <section class="cad-grid">
+      <div class="schematic-topbar">
+        <div style="font-weight:800; display:flex; align-items:center; gap:6px;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#38bdf8;"></span>
+          <span>RZUT CZOŁOWY GNIAZD MOLEX 43025 (2 RZĘDY) I SCHEMAT WIĄZKI</span>
         </div>
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] text-slate-300">
-          <!-- Przełącznik sposobu numeracji pinów w gnieździe 2-rzędowym -->
-          <div class="flex items-center gap-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1">
-            <span class="text-slate-400 font-semibold">Numeracja 2-rzędowa:</span>
-            <select id="pin-numbering-select" onchange="changePinNumberingMode(this.value)" class="bg-transparent text-sky-300 font-bold focus:outline-none cursor-pointer">
-              <option value="molex" class="bg-slate-900 text-white">Standard Molex (1..N/2 | N/2+1..N)</option>
-              <option value="alternating" class="bg-slate-900 text-white">Naprzemiennie (1,2 | 3,4 | 5,6)</option>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span style="font-size:11px; font-weight:700; color:#94a3b8;">Numeracja:</span>
+            <select id="pin-numbering-select" onchange="changePinNumberingMode(this.value)" style="width:auto; padding:4px 8px; font-size:11px;">
+              <option value="molex">Standard Molex (1..N/2 | N/2+1..N)</option>
+              <option value="alternating">Naprzemiennie (1,2 | 3,4 | 5,6)</option>
             </select>
           </div>
-          <span>Złącza L: <strong id="stat-conn-a" class="text-sky-400">1</strong></span>
-          <span>Złącza P: <strong id="stat-conn-b" class="text-emerald-400">1</strong></span>
-          <span>Przewody: <strong id="stat-wires" class="text-amber-400">0</strong></span>
-          
-          <!-- Szybkie przyciski czyszczenia bezpośrednio na pasku nad schematem -->
-          <div class="flex items-center gap-2 pl-2 border-l border-slate-700">
-            <button type="button" onclick="clearAllWires()" class="text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 bg-rose-500/10 hover:bg-rose-500/20 px-2 py-1 rounded-lg border border-rose-500/30 transition" title="Usuwa tylko przewody połączeniowe">
-              <i class="fa-solid fa-trash-can text-[10px]"></i>
-              <span>Wyczyść kable</span>
-            </button>
-            <button type="button" onclick="clearAllPinsMeta()" class="text-purple-400 hover:text-purple-300 font-bold flex items-center gap-1 bg-purple-500/10 hover:bg-purple-500/20 px-2 py-1 rounded-lg border border-purple-500/30 transition" title="Usuwa tylko opisy i kolory pinów">
-              <i class="fa-solid fa-eraser text-[10px]"></i>
-              <span>Wyczyść piny</span>
-            </button>
-          </div>
+          <span style="font-size:11px; font-weight:700;">Złącza L: <strong id="stat-conn-a" style="color:#38bdf8;">1</strong></span>
+          <span style="font-size:11px; font-weight:700;">Złącza P: <strong id="stat-conn-b" style="color:#34d399;">1</strong></span>
+          <span style="font-size:11px; font-weight:700;">Przewody: <strong id="stat-wires" style="color:#fbbf24;">0</strong></span>
+
+          <button type="button" class="btn-rose" style="padding:4px 8px; font-size:11px;" onclick="clearAllWires()">
+            🗑️ Wyczyść kable
+          </button>
+          <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="clearAllPinsMeta()">
+            🧹 Wyczyść piny
+          </button>
         </div>
       </div>
 
-      <!-- Kontener SVG skalujący się płynnie na iPhone 15 -->
-      <div class="w-full overflow-x-auto">
-        <svg id="harness-svg" class="w-full h-auto block select-none" viewBox="0 0 980 680" preserveAspectRatio="xMidYMid meet">
-          <!-- Zawartość generowana dynamicznie w JS -->
-        </svg>
+      <div style="width:100%; overflow-x:auto;">
+        <svg id="harness-svg" viewBox="0 0 980 560" preserveAspectRatio="xMidYMid meet"></svg>
       </div>
     </section>
 
-    <!-- PRZEŁĄCZNIK ZAKŁADEK POD SCHEMATEM (Duże wygodne przyciski na telefon) -->
-    <nav class="grid grid-cols-3 gap-2 bg-slate-900 p-1.5 rounded-2xl border border-slate-800 shadow-md">
-      <button type="button" onclick="switchBottomTab('wires')" id="tab-btn-wires" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-sky-600 text-white shadow transition">
-        <i class="fa-solid fa-plug-circle-bolt"></i>
-        <span>Połączenia (<span id="tab-wire-count">0</span>)</span>
+    <!-- ZAKŁADKI DOLNE -->
+    <nav class="tabs-bar">
+      <button type="button" id="tab-btn-wires" class="tab-btn active" onclick="switchBottomTab('wires')">
+        🔌 Połączenia (<span id="tab-wire-count">0</span>)
       </button>
-      <button type="button" onclick="switchBottomTab('connectors')" id="tab-btn-connectors" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition">
-        <i class="fa-solid fa-sliders"></i>
-        <span>Złącza Lewa / Prawa</span>
+      <button type="button" id="tab-btn-connectors" class="tab-btn" onclick="switchBottomTab('connectors')">
+        🎛️ Złącza Lewa / Prawa
       </button>
-      <button type="button" onclick="switchBottomTab('table')" id="tab-btn-table" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition">
-        <i class="fa-solid fa-table-list"></i>
-        <span>Tabela / Eksport</span>
+      <button type="button" id="tab-btn-table" class="tab-btn" onclick="switchBottomTab('table')">
+        📋 Tabela / Zapis Pliku
       </button>
     </nav>
 
-    <!-- ZAKŁADKA 1: LISTA POŁĄCZEŃ I SZYBKIE DODAWANIE RĘCZNE -->
-    <section id="panel-wires" class="space-y-4">
-      <!-- Szybki formularz połączenia (alternatywa dla klikania na schemacie) -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-plus-circle text-sky-400"></i>
-            Dodaj połączenie z listy (lub dotknij piny bezpośrednio na schemacie wyżej)
-          </h3>
+    <!-- ZAKŁADKA 1: POŁĄCZENIA -->
+    <section id="panel-wires">
+      <div class="panel-box">
+        <div style="font-weight:800; font-size:13px; margin-bottom:10px; color:#38bdf8;">
+          ➕ Dodaj połączenie z listy (lub dotknij piny bezpośrednio na schemacie wyżej)
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-          <!-- Złącze i pin lewa -->
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-700">
-            <label class="block text-[10px] font-bold uppercase text-sky-400 mb-1">1. Złącze i Pin (Lewa - A)</label>
-            <div class="flex gap-1.5">
-              <select id="quick-conn-a" onchange="populateQuickPinSelect('A')" class="w-2/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-2 py-2 text-xs font-semibold"></select>
-              <select id="quick-pin-a" class="w-1/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-2 py-2 text-xs font-mono font-bold"></select>
+        <div class="grid-5">
+          <div>
+            <label class="field-label" style="color:#38bdf8;">1. Złącze i Pin (Lewa - A)</label>
+            <div style="display:flex; gap:6px;">
+              <select id="quick-conn-a" onchange="populateQuickPinSelect('A')"></select>
+              <select id="quick-pin-a" class="font-mono"></select>
             </div>
           </div>
-
-          <!-- Złącze i pin prawa -->
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-700">
-            <label class="block text-[10px] font-bold uppercase text-emerald-400 mb-1">2. Złącze i Pin (Prawa - B)</label>
-            <div class="flex gap-1.5">
-              <select id="quick-conn-b" onchange="populateQuickPinSelect('B')" class="w-2/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-2 py-2 text-xs font-semibold"></select>
-              <select id="quick-pin-b" class="w-1/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-2 py-2 text-xs font-mono font-bold"></select>
+          <div>
+            <label class="field-label" style="color:#34d399;">2. Złącze i Pin (Prawa - B)</label>
+            <div style="display:flex; gap:6px;">
+              <select id="quick-conn-b" onchange="populateQuickPinSelect('B')"></select>
+              <select id="quick-pin-b" class="font-mono"></select>
             </div>
           </div>
-
-          <!-- Opis przewodu -->
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-700">
-            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">3. Opis / Sygnał</label>
-            <input type="text" id="quick-signal" placeholder="np. +12V, GND, CAN_H" class="w-full bg-slate-800 text-white border border-slate-600 rounded-lg px-2.5 py-2 text-xs font-mono">
+          <div>
+            <label class="field-label">3. Opis / Sygnał</label>
+            <input type="text" id="quick-signal" placeholder="np. +12V, GND, CAN_H" class="font-mono">
           </div>
-
-          <!-- Kolor i przekrój -->
-          <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-700">
-            <label class="block text-[10px] font-bold uppercase text-slate-300 mb-1">4. Kolor i Przekrój</label>
-            <div class="flex gap-1.5">
-              <select id="quick-color" class="w-2/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-2 py-2 text-xs font-semibold"></select>
-              <select id="quick-awg" class="w-1/3 bg-slate-800 text-white border border-slate-600 rounded-lg px-1.5 py-2 text-xs">
+          <div>
+            <label class="field-label">4. Kolor i Przekrój</label>
+            <div style="display:flex; gap:6px;">
+              <select id="quick-color"></select>
+              <select id="quick-awg">
                 <option value="20 AWG">20 AWG</option>
                 <option value="22 AWG" selected>22 AWG</option>
                 <option value="24 AWG">24 AWG</option>
@@ -251,247 +435,172 @@
               </select>
             </div>
           </div>
-
-          <!-- Przycisk Połącz -->
-          <div class="flex items-end">
-            <button type="button" onclick="addWireFromQuickBar()" class="w-full h-full min-h-[44px] bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-bold rounded-xl text-xs shadow-lg flex items-center justify-center gap-2 transition">
-              <i class="fa-solid fa-link"></i>
-              <span>Połącz piny</span>
+          <div style="display:flex; align-items:flex-end;">
+            <button type="button" class="btn-sky" style="width:100%; height:36px;" onclick="addWireFromQuickBar()">
+              🔗 Połącz piny
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Lista aktywnych połączeń przewodowych -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-amber-400"></i>
-            Lista utworzonych przewodów (dotknij wiersz, aby zmienić opis lub kolor)
-          </h3>
+      <div class="panel-box">
+        <div style="font-weight:800; font-size:13px; margin-bottom:10px; color:#fbbf24;">
+          📋 Lista utworzonych przewodów (dotknij wiersz, aby edytować)
         </div>
-        <div id="wires-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-          <!-- Generowane dynamicznie -->
-        </div>
+        <div id="wires-cards-container" class="grid-2"></div>
       </div>
 
-      <!-- Lista opisanych / pokolorowanych pojedynczych pinów -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <h3 class="text-sm font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-palette text-purple-400"></i>
-            Opisane i pokolorowane pojedyncze piny (dotknij dowolny pin na schemacie, aby edytować)
-          </h3>
-          <button type="button" onclick="setInteractionMode('pin'); window.scrollTo({top: 0, behavior: 'smooth'});" class="bg-purple-600/30 hover:bg-purple-600/50 border border-purple-400/40 text-purple-200 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5">
-            <i class="fa-solid fa-hand-pointer"></i> Włącz tryb edycji pinów
+      <div class="panel-box">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <div style="font-weight:800; font-size:13px; color:#c084fc;">
+            🎨 Opisane i pokolorowane pojedyncze piny
+          </div>
+          <button type="button" class="btn-purple" onclick="setInteractionMode('pin'); window.scrollTo({top: 0, behavior: 'smooth'});">
+            👆 Włącz tryb edycji pinów
           </button>
         </div>
-        <div id="custom-pins-cards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-          <!-- Generowane dynamicznie -->
+        <div id="custom-pins-cards-container" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- ZAKŁADKA 2: ZŁĄCZA -->
+    <section id="panel-connectors" class="hidden">
+      <div class="grid-2">
+        <div class="panel-box">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid #334155;">
+            <div>
+              <span style="font-size:10px; font-weight:800; color:#38bdf8; text-transform:uppercase;">STRONA A (LEWA)</span>
+              <div style="font-size:14px; font-weight:800;">Złącza po lewej stronie</div>
+            </div>
+            <button type="button" class="btn-sky" onclick="addConnector('A')">+ Dodaj złącze L</button>
+          </div>
+          <div id="connectors-list-a" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+
+        <div class="panel-box">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid #334155;">
+            <div>
+              <span style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">STRONA B (PRAWA)</span>
+              <div style="font-size:14px; font-weight:800;">Złącza po prawej stronie</div>
+            </div>
+            <button type="button" class="btn-emerald" onclick="addConnector('B')">+ Dodaj złącze P</button>
+          </div>
+          <div id="connectors-list-b" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
       </div>
     </section>
 
-    <!-- ZAKŁADKA 2: KONFIGURACJA ZŁĄCZ (STRONA LEWA A i STRONA PRAWA B) -->
-    <section id="panel-connectors" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Strona A (Lewa) -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
+    <!-- ZAKŁADKA 3: TABELA I ZAPIS -->
+    <section id="panel-table" class="hidden">
+      <div class="panel-box">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
           <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">Strona A (Lewa)</span>
-            <h3 class="text-sm font-bold text-white mt-1">Złącza wejściowe (Lewa strona)</h3>
+            <div style="font-weight:800; font-size:14px;">Tabela Montażowa Połączeń (Wire Run List) i Eksport</div>
+            <div style="font-size:12px; color:#94a3b8;">Zapisz schemat na komputerze (Windows/Mac/Linux) lub telefonie (Android/iPhone).</div>
           </div>
-          <button type="button" onclick="addConnector('A')" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow">
-            <i class="fa-solid fa-plus"></i> Dodaj złącze L
-          </button>
-        </div>
-        <div id="connectors-list-a" class="space-y-3"></div>
-      </div>
-
-      <!-- Strona B (Prawa) -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-2.5">
-          <div>
-            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Strona B (Prawa)</span>
-            <h3 class="text-sm font-bold text-white mt-1">Złącza wyjściowe (Prawa strona)</h3>
-          </div>
-          <button type="button" onclick="addConnector('B')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow">
-            <i class="fa-solid fa-plus"></i> Dodaj złącze P
-          </button>
-        </div>
-        <div id="connectors-list-b" class="space-y-3"></div>
-      </div>
-    </section>
-
-    <!-- ZAKŁADKA 3: TABELA MONTAŻOWA PINOUT I EKSPORT -->
-    <section id="panel-table" class="hidden space-y-4">
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <div>
-            <h3 class="text-sm font-bold text-white">Tabela Montażowa Połączeń (Wire Run List) i Uniwersalny Zapis</h3>
-            <p class="text-xs text-slate-400">Zapisz schemat oraz dokumentację na Windows, macOS, Android, iPhone/iPad lub Linux w wybranym formacie.</p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="openPreviewModal('sheet')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow-lg">
-              <i class="fa-solid fa-file-image"></i> Obraz PNG (Schemat + Tabela)
-            </button>
-            <button type="button" onclick="downloadVectorSVG()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-bezier-curve"></i> Wektor CAD (.SVG)
-            </button>
-            <button type="button" onclick="downloadStandaloneHTMLReport()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-file-code"></i> Dokumentacja Offline (.HTML)
-            </button>
-            <button type="button" onclick="downloadCSVTable()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-file-csv"></i> Tabela Excel (.CSV)
-            </button>
-            <button type="button" onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-print"></i> Drukuj / PDF
-            </button>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-emerald" onclick="openPreviewModal('sheet')">🖼️ Obraz PNG (Schemat + Tabela)</button>
+            <button type="button" class="btn-sky" onclick="downloadVectorSVG()">📐 Wektor CAD (.SVG)</button>
+            <button type="button" class="btn-purple" onclick="downloadStandaloneHTMLReport()">📄 Raport Offline (.HTML)</button>
+            <button type="button" class="btn-amber" onclick="downloadCSVTable()">📊 Tabela Excel (.CSV)</button>
+            <button type="button" class="btn-outline" onclick="printToPDF()">🖨️ Drukuj / PDF (Jasne tło)</button>
           </div>
         </div>
 
-        <div class="overflow-x-auto rounded-xl border border-slate-700">
-          <table class="w-full text-left border-collapse text-xs">
+        <div class="table-wrap">
+          <table class="wire-table">
             <thead>
-              <tr class="bg-slate-900 text-slate-300 border-b border-slate-700 uppercase text-[10px]">
-                <th class="py-2.5 px-3">Lp.</th>
-                <th class="py-2.5 px-3">Złącze A (Lewa)</th>
-                <th class="py-2.5 px-3">Pin A</th>
-                <th class="py-2.5 px-3">Złącze B (Prawa)</th>
-                <th class="py-2.5 px-3">Pin B</th>
-                <th class="py-2.5 px-3">Kolor przewodu</th>
-                <th class="py-2.5 px-3">Opis / Sygnał</th>
-                <th class="py-2.5 px-3">Przekrój</th>
+              <tr>
+                <th>Lp.</th>
+                <th>Złącze A (Lewa)</th>
+                <th>Pin A</th>
+                <th>Złącze B (Prawa)</th>
+                <th>Pin B</th>
+                <th>Kolor przewodu</th>
+                <th>Opis / Sygnał</th>
+                <th>Przekrój</th>
               </tr>
             </thead>
-            <tbody id="pinout-table-body" class="divide-y divide-slate-700/70 bg-slate-800/50">
-              <!-- Wiersze tabeli -->
-            </tbody>
+            <tbody id="pinout-table-body"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- ZAPIS I WCZYTYWANIE PROJEKTU (WSZYSTKIE SYSTEMY: WINDOWS, MAC, ANDROID, IOS, LINUX) -->
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-md space-y-3.5">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h4 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-floppy-disk text-sky-400"></i>
-              Zapis i Wczytywanie Projektu (.json) – Windows / macOS / Android / iOS / Linux
-            </h4>
-            <p class="text-[11px] text-slate-400">Nadaj własną nazwę pliku, zapisz na dysku komputera (z wyborem folderu) lub w pamięci telefonu i wczytaj w dowolnej chwili.</p>
-          </div>
+      <div class="panel-box">
+        <div style="font-weight:800; font-size:14px; margin-bottom:4px; color:#38bdf8;">💾 Zapis i Wczytywanie Projektu (.json)</div>
+        <div style="font-size:12px; color:#94a3b8; margin-bottom:10px;">
+          Zapisz plik projektu na dysku lub w telefonie, aby móc wrócić do edycji w dowolnej chwili.
         </div>
 
-        <!-- Pasek nazwy pliku i przycisków zapisu/odczytu -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center bg-slate-900/90 p-3 rounded-xl border border-slate-700">
-          <div class="sm:col-span-4">
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nazwa pliku projektu / schematu:</label>
-            <input type="text" id="export-filename-input" value="wiazka-molex-43025" placeholder="np. wiazka-molex-43025" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-2 text-xs font-mono text-white focus:border-sky-400 focus:outline-none">
+        <div class="grid-3" style="align-items:end; margin-bottom:12px;">
+          <div>
+            <label class="field-label">Nazwa pliku:</label>
+            <input type="text" id="export-filename-input" value="wiazka-molex-43025" class="font-mono">
           </div>
-          <div class="sm:col-span-8 flex flex-wrap gap-2 sm:justify-end pt-1 sm:pt-4">
-            <!-- Zapisz plik JSON (z obsługą okna wyboru miejsca zapisu na PC oraz udostępniania na telefonie) -->
-            <button type="button" onclick="saveProjectUniversalJSON()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-download"></i> Zapisz projekt na urządzeniu (.json)
-            </button>
-            <!-- Udostępnij projekt natywnie (Android / iOS / macOS) -->
-            <button type="button" onclick="shareProjectFileMobile()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
-              <i class="fa-solid fa-share-nodes"></i> Wyślij plik projektu (Telefon / Chmura)
-            </button>
-            <!-- Wgraj plik JSON z dysku/telefonu -->
-            <label class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow cursor-pointer">
-              <i class="fa-solid fa-folder-open"></i> Otwórz plik projektu (.json)
+          <div style="display:flex; gap:6px; flex-wrap:wrap; grid-column: span 2;">
+            <button type="button" class="btn-sky" onclick="saveProjectUniversalJSON()">📥 Zapisz projekt (.json)</button>
+            <button type="button" class="btn-purple" onclick="shareProjectFileMobile()">📤 Udostępnij plik (Telefon)</button>
+            <label class="btn-emerald btn-label">
+              📂 Wczytaj plik (.json)
               <input type="file" id="project-file-input" accept=".json,application/json,text/plain" onchange="handleProjectFileUpload(event)" class="hidden">
             </label>
+            <button type="button" class="btn-outline" onclick="copyProjectToClipboard()">📋 Skopiuj kod JSON (Obsidian)</button>
           </div>
         </div>
 
-        <!-- Strefa Przeciągnij i Upuść (Drag & Drop) dla komputerów PC / Mac -->
-        <div id="drop-zone-area"
-          ondragover="handleDragOver(event)"
-          ondragleave="handleDragLeave(event)"
-          ondrop="handleFileDrop(event)"
-          class="border-2 border-dashed border-slate-700 hover:border-sky-400 rounded-xl p-3 text-center transition bg-slate-900/40">
-          <div class="text-xs text-slate-300 font-semibold flex items-center justify-center gap-2">
-            <i class="fa-solid fa-cloud-arrow-up text-sky-400 text-base"></i>
-            <span>Na komputerze możesz też <b>przeciągnąć i upuścić tutaj plik .json</b>, aby natychmiast wczytać schemat</span>
-          </div>
-        </div>
-
-        <div class="border-t border-slate-700/80 pt-3 flex flex-wrap items-center justify-between gap-2">
-          <span class="text-[11px] text-slate-400">Lub użyj uniwersalnego schowka tekstowego (działa na każdym systemie):</span>
-          <div class="flex gap-2">
-            <button type="button" onclick="copyProjectToClipboard()" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-copy text-sky-400"></i> Skopiuj kod projektu
-            </button>
-          </div>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-2">
-          <input type="text" id="import-json-input" placeholder="Wklej tutaj skopiowany kod projektu JSON, aby go wczytać..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono">
-          <button type="button" onclick="loadProjectFromInput()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded-xl text-xs shrink-0">
-            Wczytaj ze schowka
-          </button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <input type="text" id="import-json-input" placeholder="Wklej tutaj skopiowany kod JSON projektu, aby go wczytać..." class="font-mono" style="flex:1;">
+          <button type="button" class="btn-outline" onclick="loadProjectFromInput()">Wczytaj ze schowka</button>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 1: KONFIGURACJA PRZEWODU (ŁĄCZENIE PINÓW LEWA <-> PRAWA / EDYCJA)   -->
-  <!-- ========================================================================= -->
-  <div id="wire-modal" class="app-modal fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-3 pb-12 overflow-y-auto" onclick="handleBackdropClick(event, 'wire-modal')">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl my-auto text-white" onclick="event.stopPropagation()">
-      <div class="bg-slate-800 px-3.5 py-3 border-b border-slate-700 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
-          <i class="fa-solid fa-plug-circle-bolt text-sky-400"></i>
-          <h3 id="wire-modal-heading" class="font-bold text-xs sm:text-sm truncate">Parametry przewodu połączeniowego</h3>
-        </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" onclick="closeAllModals()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
-            <i class="fa-solid fa-arrow-left"></i> <span>Wróć</span>
-          </button>
-          <button type="button" onclick="saveWireFromModal()" class="bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
-            <i class="fa-solid fa-check"></i> <span>Zapisz</span>
-          </button>
+  <!-- MODAL 1: PRZEWÓD -->
+  <div id="wire-modal" class="app-modal" onclick="handleBackdropClick(event, 'wire-modal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div style="font-weight:800; font-size:13px; color:#38bdf8;">🔌 Parametry przewodu połączeniowego</div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-outline" style="padding:5px 10px;" onclick="closeAllModals()">Wróć</button>
+          <button type="button" class="btn-sky" style="padding:5px 12px;" onclick="saveWireFromModal()">✓ Zapisz</button>
         </div>
       </div>
 
-      <div class="p-4 space-y-4 text-xs">
-        <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; background:#0b1120; padding:10px 12px; border-radius:10px; border:1px solid #1e293b;">
           <div>
-            <span class="text-[10px] text-sky-400 font-bold uppercase block">STRONA A (LEWA)</span>
-            <span id="modal-from-label" class="font-mono font-extrabold text-sm text-white">J1 : Pin 1</span>
+            <span style="font-size:10px; font-weight:800; color:#38bdf8; display:block;">STRONA A (LEWA)</span>
+            <strong id="modal-from-label" class="font-mono" style="font-size:14px;">J1 : Pin #1</strong>
           </div>
-          <i class="fa-solid fa-arrows-left-right text-slate-400 text-base"></i>
-          <div class="text-right">
-            <span class="text-[10px] text-emerald-400 font-bold uppercase block">STRONA B (PRAWA)</span>
-            <span id="modal-to-label" class="font-mono font-extrabold text-sm text-white">J3 : Pin 1</span>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-200 mb-1.5">1. Opis przewodu / Nazwa sygnału:</label>
-          <input type="text" id="modal-signal-input" onkeydown="if(event.key==='Enter'){event.preventDefault();saveWireFromModal();}" placeholder="np. +12V_ZASILANIE, GND, CAN_H..." class="w-full bg-slate-800 border border-slate-600 focus:border-sky-400 rounded-xl px-3 py-2.5 text-sm font-mono text-white focus:outline-none">
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <span class="text-[10px] text-slate-400 self-center mr-1">Szybki wybór:</span>
-            <button type="button" onclick="setQuickSignal('+12V')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">+12V</button>
-            <button type="button" onclick="setQuickSignal('+5V')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">+5V</button>
-            <button type="button" onclick="setQuickSignal('GND')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">GND</button>
-            <button type="button" onclick="setQuickSignal('CAN_H')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">CAN_H</button>
-            <button type="button" onclick="setQuickSignal('CAN_L')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">CAN_L</button>
-            <button type="button" onclick="setQuickSignal('SYGNAL')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">SYGNAL</button>
+          <span style="font-size:18px; color:#475569;">↔</span>
+          <div style="text-align:right;">
+            <span style="font-size:10px; font-weight:800; color:#34d399; display:block;">STRONA B (PRAWA)</span>
+            <strong id="modal-to-label" class="font-mono" style="font-size:14px;">J2 : Pin #1</strong>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-200 mb-1.5">2. Kolor izolacji przewodu:</label>
-          <div id="modal-color-grid" class="grid grid-cols-4 gap-1.5"></div>
+          <label class="field-label">1. Opis przewodu / Nazwa sygnału:</label>
+          <input type="text" id="modal-signal-input" placeholder="np. +12V, GND, CAN_H..." class="font-mono" onkeydown="if(event.key==='Enter'){event.preventDefault();saveWireFromModal();}">
+          <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:6px;">
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('+12V')">+12V</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('+5V')">+5V</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('GND')">GND</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('CAN_H')">CAN_H</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('CAN_L')">CAN_L</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickSignal('SYGNAL')">SYGNAL</button>
+          </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-200 mb-1.5">3. Przekrój przewodu (AWG):</label>
-          <select id="modal-awg-select" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-3 py-2.5 text-xs font-semibold text-white">
+          <label class="field-label">2. Kolor izolacji przewodu:</label>
+          <div id="modal-color-grid" class="grid-4"></div>
+        </div>
+
+        <div>
+          <label class="field-label">3. Przekrój przewodu (AWG):</label>
+          <select id="modal-awg-select">
             <option value="18 AWG">18 AWG (0.82 mm² - Zasilanie)</option>
             <option value="20 AWG">20 AWG (0.52 mm² - Standard)</option>
             <option value="22 AWG" selected>22 AWG (0.33 mm² - Sygnałowy)</option>
@@ -499,300 +608,172 @@
           </select>
         </div>
 
-        <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-          <button type="button" id="modal-delete-wire-btn" onclick="deleteWireFromModal()" class="hidden px-3 py-2.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-bold text-xs items-center gap-1.5">
-            <i class="fa-solid fa-trash-can"></i> Usuń przewód
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid #334155;">
+          <button type="button" id="modal-delete-wire-btn" class="btn-rose hidden" onclick="deleteWireFromModal()">
+            🗑️ Usuń przewód
           </button>
-          <div class="flex items-center gap-2 ml-auto">
-            <button type="button" onclick="closeAllModals()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
-              Anuluj
-            </button>
-            <button type="button" onclick="saveWireFromModal()" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2">
-              <i class="fa-solid fa-check"></i>
-              <span>Zapisz połączenie</span>
-            </button>
+          <div style="display:flex; gap:8px; margin-left:auto;">
+            <button type="button" class="btn-outline" onclick="closeAllModals()">Anuluj</button>
+            <button type="button" class="btn-sky" onclick="saveWireFromModal()">✓ Zapisz połączenie</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 2: UNIWERSALNY ZAPIS SCHEMATU (WINDOWS, MAC, ANDROID, IPHONE, LINUX) -->
-  <!-- ========================================================================= -->
-  <div id="preview-modal" class="app-modal fixed inset-0 z-50 bg-black/85 backdrop-blur-sm items-center justify-center p-2.5 sm:p-4 overflow-y-auto" onclick="handleBackdropClick(event, 'preview-modal')">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl my-auto text-white" onclick="event.stopPropagation()">
-      <!-- Górny pasek z bardzo wyraźnym przyciskiem Powrotu -->
-      <div class="bg-slate-800 px-3.5 py-3 border-b border-slate-700 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-floppy-disk text-emerald-400"></i>
-          <h3 class="font-bold text-xs sm:text-sm">Centrum Zapisu i Eksportu (PC / Mac / Android / iPhone)</h3>
-        </div>
-        <button type="button" onclick="closeAllModals()" class="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
-          <i class="fa-solid fa-arrow-left"></i> Wróć do edytora
-        </button>
+  <!-- MODAL 2: ZAPIS I EKSPORT -->
+  <div id="preview-modal" class="app-modal" onclick="handleBackdropClick(event, 'preview-modal')">
+    <div class="modal-card modal-wide" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div style="font-weight:800; font-size:13px; color:#34d399;">💾 Centrum Zapisu i Eksportu (PC / Mac / Android / iPhone)</div>
+        <button type="button" class="btn-sky" style="padding:5px 12px;" onclick="closeAllModals()">← Wróć do edytora</button>
       </div>
 
-      <div class="p-3.5 sm:p-4 space-y-3.5">
-        <!-- Przełącznik trybu obrazu oraz nazwa pliku -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 bg-slate-950 p-2.5 rounded-xl border border-slate-800 items-center">
-          <div class="md:col-span-5 flex items-center gap-2">
-            <label class="text-[11px] font-bold text-slate-400 shrink-0">Nazwa pliku:</label>
-            <input type="text" id="modal-filename-input" value="schemat-molex-43025" oninput="syncFilenameInputs(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white focus:border-sky-400 focus:outline-none">
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#0b1120; padding:10px; border-radius:10px; border:1px solid #1e293b;">
+          <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:200px;">
+            <span style="font-size:12px; font-weight:800; white-space:nowrap; color:#94a3b8;">Nazwa pliku:</span>
+            <input type="text" id="modal-filename-input" value="schemat-molex-43025" oninput="syncFilenameInputs(this.value)" class="font-mono">
           </div>
-          <div class="md:col-span-7 flex gap-1.5 justify-end">
-            <button type="button" id="mode-btn-sheet" onclick="switchExportMode('sheet')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow">
-              Schemat + Tabela + Piny (Komplet)
-            </button>
-            <button type="button" id="mode-btn-schematic" onclick="switchExportMode('schematic')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">
-              Tylko Schemat Gniazd
-            </button>
+          <div style="display:flex; gap:6px;">
+            <button type="button" id="mode-btn-sheet" class="btn-emerald" onclick="switchExportMode('sheet')">Schemat + Tabela</button>
+            <button type="button" id="mode-btn-schematic" class="btn-outline" onclick="switchExportMode('schematic')">Tylko Schemat</button>
           </div>
         </div>
 
-        <!-- GŁÓWNE PRZYCISKI ZAPISU DLA WSZYSTKICH SYSTEMÓW I URZĄDZEŃ -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          <!-- 1. Pobierz obraz PNG (Windows / Mac / Android / iOS Pliki) -->
-          <button type="button" onclick="downloadSchematicPNG()" class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-xs shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-solid fa-download text-sm"></i>
-            <span>Zapisz obraz PNG (PC / Telefon)</span>
-          </button>
-
-          <!-- 2. Menu systemowe (iPhone Zdjęcia / Android Galeria / Chmura) -->
-          <button type="button" onclick="shareImageNativeiOS()" class="w-full py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-extrabold text-xs shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-solid fa-share-from-square text-sm"></i>
-            <span>Udostępnij / Galeria (iOS / Android)</span>
-          </button>
-
-          <!-- 3. Zapisz plik projektu .JSON (do późniejszej edycji) -->
-          <button type="button" onclick="saveProjectUniversalJSON()" class="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow flex items-center justify-center gap-2">
-            <i class="fa-solid fa-file-export text-sm"></i>
-            <span>Zapisz projekt do edycji (.JSON)</span>
-          </button>
-
-          <!-- 4. Wektorowy plik SVG (CAD / Corel / Inkscape / Przeglądarki) -->
-          <button type="button" onclick="downloadVectorSVG()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold text-xs flex items-center justify-center gap-2">
-            <i class="fa-solid fa-bezier-curve text-sky-400"></i>
-            <span>Pobierz wektor CAD (.SVG)</span>
-          </button>
-
-          <!-- 5. Samodzielny plik HTML (Działa offline na każdym systemie) -->
-          <button type="button" onclick="downloadStandaloneHTMLReport()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold text-xs flex items-center justify-center gap-2">
-            <i class="fa-solid fa-file-code text-indigo-400"></i>
-            <span>Pobierz raport Offline (.HTML)</span>
-          </button>
-
-          <!-- 6. Tabela połączeń CSV (Excel Windows / Mac / LibreOffice) -->
-          <button type="button" onclick="downloadCSVTable()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-100 font-bold text-xs flex items-center justify-center gap-2">
-            <i class="fa-solid fa-file-csv text-amber-400"></i>
-            <span>Tabela dla programu Excel (.CSV)</span>
-          </button>
+        <div class="grid-3">
+          <button type="button" class="btn-emerald" onclick="downloadSchematicPNG()">📥 Zapisz obraz PNG (Jasne Tło)</button>
+          <button type="button" class="btn-sky" onclick="shareImageNativeiOS()">📲 Udostępnij / Galeria (Telefon)</button>
+          <button type="button" class="btn-purple" onclick="saveProjectUniversalJSON()">💾 Zapisz projekt do edycji (.JSON)</button>
+          <button type="button" class="btn-outline" onclick="downloadVectorSVG()">📐 Pobierz wektor CAD (.SVG)</button>
+          <button type="button" class="btn-outline" onclick="downloadStandaloneHTMLReport()">📄 Pobierz raport Offline (.HTML)</button>
+          <button type="button" class="btn-outline" onclick="downloadCSVTable()">📊 Tabela dla Excel (.CSV)</button>
         </div>
 
-        <!-- Krótka ściągawka dopasowana do każdego systemu -->
-        <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-300 grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div class="flex items-start gap-2">
-            <i class="fa-solid fa-desktop text-sky-400 mt-0.5"></i>
-            <div><b>Windows / macOS / Linux:</b> Kliknij „Zapisz obraz PNG”, „Wektor .SVG” lub „Zapisz projekt .JSON” – przeglądarka pozwoli wybrać folder docelowy lub zapisze w <i>Pobrane</i>.</div>
+        <div style="background:#0b1120; border:1px solid #1e293b; border-radius:12px; padding:10px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; color:#38bdf8; margin-bottom:6px;">
+            👇 Poniższe pliki PNG/PDF są specjalnie odwracane do "Jasnego Motywu" oszczędzającego tusz drukarki:
           </div>
-          <div class="flex items-start gap-2">
-            <i class="fa-brands fa-apple text-emerald-400 mt-0.5"></i>
-            <div><b>iPhone / iPad (iOS):</b> Dotknij „Udostępnij / Galeria”, a następnie wybierz <b>„Zapisz obraz”</b> (trafi do Zdjęć) lub <b>„Zapisz w Plikach”</b>.</div>
-          </div>
-          <div class="flex items-start gap-2">
-            <i class="fa-brands fa-android text-amber-400 mt-0.5"></i>
-            <div><b>Android:</b> Kliknij „Zapisz obraz PNG” (trafi bezpośrednio do Pobranych/Galerii) lub „Udostępnij”, aby wysłać na Dysk Google / WhatsApp / e-mail.</div>
-          </div>
+          <img id="generated-png-preview" alt="Podgląd schematu Molex" style="max-width:100%; height:auto; border:1px solid #334155; border-radius:8px;">
         </div>
 
-        <!-- Podgląd wygenerowanego obrazu PNG -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-2 flex flex-col items-center justify-center">
-          <span class="text-[11px] text-amber-300 font-semibold mb-1.5 flex items-center gap-1.5">
-            <i class="fa-solid fa-hand-pointer"></i>
-            Na telefonie możesz też przytrzymać palcem obrazek poniżej (na PC: prawy przycisk myszy → „Zapisz grafikę jako...”):
-          </span>
-          <img id="generated-png-preview" alt="Schemat połączeń Molex" class="max-w-full h-auto rounded-lg border border-slate-800 shadow-lg" />
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
-          <button type="button" onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold text-xs flex items-center gap-1.5">
-            <i class="fa-solid fa-print text-sky-400"></i> Drukuj lub Zapisz jako PDF
-          </button>
-          <button type="button" onclick="closeAllModals()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-arrow-left"></i> Powrót do strony głównej
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid #334155;">
+          <button type="button" onclick="printToPDF()" class="btn-outline">
+            🖨️ Drukuj lub Zapisz jako PDF (Białe tło)
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL 3: KONFIGURACJA POJEDYNCZEGO PINU (Opis, Kolor obrysu, Kolor pinu)  -->
-  <!-- ========================================================================= -->
-  <div id="pin-modal" class="app-modal fixed inset-0 z-50 bg-black/80 backdrop-blur-sm items-center justify-center p-3 pb-12 overflow-y-auto" onclick="handleBackdropClick(event, 'pin-modal')">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl my-auto text-white" onclick="event.stopPropagation()">
-      <!-- Górny pasek modala pinu -->
-      <div class="bg-slate-800 px-3.5 py-3 border-b border-slate-700 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
-          <i class="fa-solid fa-palette text-purple-400"></i>
-          <h3 class="font-bold text-xs sm:text-sm truncate">Wygląd i opis pojedynczego pinu</h3>
-        </div>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" onclick="closeAllModals()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1">
-            <i class="fa-solid fa-arrow-left"></i> <span>Wróć</span>
-          </button>
-          <button type="button" onclick="saveSinglePinFromModal()" class="bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow">
-            <i class="fa-solid fa-check"></i> <span>Zapisz pin</span>
-          </button>
+  <!-- MODAL 3: POJEDYNCZY PIN -->
+  <div id="pin-modal" class="app-modal" onclick="handleBackdropClick(event, 'pin-modal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div style="font-weight:800; font-size:13px; color:#c084fc;">🎨 Wygląd i opis pojedynczego pinu</div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn-outline" style="padding:5px 10px;" onclick="closeAllModals()">Wróć</button>
+          <button type="button" class="btn-purple" style="padding:5px 12px;" onclick="saveSinglePinFromModal()">✓ Zapisz pin</button>
         </div>
       </div>
 
-      <div class="p-4 pb-6 space-y-4 text-xs">
-        <!-- Podgląd na żywo edytowanego pinu -->
-        <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 gap-3">
+      <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; background:#0b1120; padding:10px 12px; border-radius:10px; border:1px solid #1e293b;">
           <div>
-            <span id="pin-modal-side-badge" class="text-[10px] text-sky-400 font-bold uppercase block">STRONA A (LEWA)</span>
-            <span id="pin-modal-title-label" class="font-mono font-extrabold text-base text-white">J1 : Pin 1</span>
-            <span class="block text-[11px] text-slate-400 mt-0.5">Podgląd komory gniazda Molex na żywo →</span>
+            <span id="pin-modal-side-badge" style="font-size:10px; font-weight:800; color:#38bdf8; display:block;">STRONA A (LEWA)</span>
+            <strong id="pin-modal-title-label" class="font-mono" style="font-size:15px;">J1 : Pin #1</strong>
           </div>
-          <!-- Mini podgląd komory Molex -->
-          <div id="pin-modal-live-preview" class="w-24 h-16 rounded-xl flex flex-col justify-between p-2 shrink-0 transition-all" style="background-color: #0f172a; border: 3px solid #38bdf8;">
-            <div class="flex items-center justify-between">
-              <span id="pin-preview-num" class="font-mono font-extrabold text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-white">#1</span>
-              <span id="pin-preview-dot" class="w-4 h-4 rounded-full border border-white/60 inline-block" style="background-color: #38bdf8;"></span>
+          <div id="pin-modal-live-preview" style="width:92px; height:58px; border-radius:10px; padding:6px; display:flex; flex-direction:column; justify-content:space-between; background:#0f172a; border:3px solid #38bdf8;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span id="pin-preview-num" class="font-mono" style="font-size:10px; font-weight:800; background:#1e293b; color:#fff; padding:1px 5px; border-radius:4px;">#1</span>
+              <span id="pin-preview-dot" style="width:12px; height:12px; border-radius:3px; background:#38bdf8; display:inline-block; border:1px solid #0f172a;"></span>
             </div>
-            <div id="pin-preview-label" class="font-mono font-bold text-[10px] text-center truncate text-amber-300">OPIS</div>
+            <div id="pin-preview-label" class="font-mono" style="font-size:9px; font-weight:800; text-align:center; overflow:hidden; text-overflow:ellipsis; color:#f8fafc;">OPIS</div>
           </div>
         </div>
 
-        <!-- 1. Opis pojedynczego pinu -->
         <div>
-          <label class="block text-xs font-bold text-slate-200 mb-1.5">1. Opis pinu / Funkcja wyprowadzenia:</label>
-          <input type="text" id="pin-modal-label-input" oninput="updateSinglePinLivePreview()" onkeydown="if(event.key==='Enter'){event.preventDefault();saveSinglePinFromModal();}" placeholder="Wpisz opis pinu, np. +12V, GND, CAN_H, NC..." class="w-full bg-slate-800 border border-slate-600 focus:border-purple-400 rounded-xl px-3 py-2.5 text-sm font-mono text-white focus:outline-none">
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <span class="text-[10px] text-slate-400 self-center mr-1">Szybki opis:</span>
-            <button type="button" onclick="setQuickPinLabel('GND')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">GND</button>
-            <button type="button" onclick="setQuickPinLabel('+12V')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">+12V</button>
-            <button type="button" onclick="setQuickPinLabel('+5V')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">+5V</button>
-            <button type="button" onclick="setQuickPinLabel('IGN')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">IGN</button>
-            <button type="button" onclick="setQuickPinLabel('CAN_H')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">CAN_H</button>
-            <button type="button" onclick="setQuickPinLabel('CAN_L')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">CAN_L</button>
-            <button type="button" onclick="setQuickPinLabel('NC')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-mono">NC</button>
+          <label class="field-label">1. Opis pinu / Funkcja wyprowadzenia:</label>
+          <input type="text" id="pin-modal-label-input" oninput="updateSinglePinLivePreview()" onkeydown="if(event.key==='Enter'){event.preventDefault();saveSinglePinFromModal();}" placeholder="np. +12V, GND, CAN_H, NC..." class="font-mono">
+          <div style="display:flex; gap:5px; flex-wrap:wrap; margin-top:6px;">
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('GND')">GND</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('+12V')">+12V</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('+5V')">+5V</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('CAN_H')">CAN_H</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('CAN_L')">CAN_L</button>
+            <button type="button" class="btn-outline" style="padding:4px 8px; font-size:11px;" onclick="setQuickPinLabel('NC')">NC</button>
           </div>
         </div>
 
-        <!-- 2. Kolor OBRYSU pinu (Ramka komory Molex) -->
         <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-bold text-slate-200">2. Kolor obrysu pinu (Ramka komory):</label>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="selectPinStrokeColor('', 'Domyślny')" class="text-[11px] text-slate-400 hover:text-white underline">Domyślny</button>
-              <label class="flex items-center gap-1 text-[11px] text-purple-400 cursor-pointer font-semibold">
-                <span>Własny:</span>
-                <input type="color" id="pin-modal-custom-stroke" onchange="selectPinStrokeColor(this.value, 'Własny')" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0">
-              </label>
-            </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label class="field-label" style="margin:0;">2. Kolor obrysu komory:</label>
+            <button type="button" class="btn-outline" style="padding:2px 8px; font-size:10px;" onclick="selectPinStrokeColor('', 'Domyślny')">Domyślny</button>
           </div>
-          <div id="pin-stroke-color-grid" class="grid grid-cols-4 gap-1.5">
-            <!-- Generowane w JS -->
-          </div>
+          <div id="pin-stroke-color-grid" class="grid-4"></div>
         </div>
 
-        <!-- 3. Kolor PINU (Wypełnienie komory i styku) -->
         <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-xs font-bold text-slate-200">3. Kolor pinu (Wypełnienie / Styk):</label>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="selectPinFillColor('', 'Domyślny')" class="text-[11px] text-slate-400 hover:text-white underline">Domyślny</button>
-              <label class="flex items-center gap-1 text-[11px] text-purple-400 cursor-pointer font-semibold">
-                <span>Własny:</span>
-                <input type="color" id="pin-modal-custom-fill" onchange="selectPinFillColor(this.value, 'Własny')" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0">
-              </label>
-            </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label class="field-label" style="margin:0;">3. Kolor wypełnienia / styku:</label>
+            <button type="button" class="btn-outline" style="padding:2px 8px; font-size:10px;" onclick="selectPinFillColor('', 'Domyślny')">Domyślny</button>
           </div>
-          <div id="pin-fill-color-grid" class="grid grid-cols-4 gap-1.5">
-            <!-- Generowane w JS -->
-          </div>
+          <div id="pin-fill-color-grid" class="grid-4"></div>
         </div>
 
-        <!-- Stopka z przyciskami -->
-        <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
-          <button type="button" onclick="resetSinglePinStyleFromModal()" class="px-3 py-2.5 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-bold text-xs flex items-center gap-1.5">
-            <i class="fa-solid fa-eraser"></i> Wyczyść pin
-          </button>
-          <div class="flex items-center gap-2 ml-auto">
-            <button type="button" onclick="closeAllModals()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
-              Anuluj
-            </button>
-            <button type="button" onclick="saveSinglePinFromModal()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 cursor-pointer">
-              <i class="fa-solid fa-check"></i>
-              <span>Zapisz pin</span>
-            </button>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid #334155;">
+          <button type="button" class="btn-rose" onclick="resetSinglePinStyleFromModal()">🧹 Wyczyść pin</button>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn-outline" onclick="closeAllModals()">Anuluj</button>
+            <button type="button" class="btn-purple" onclick="saveSinglePinFromModal()">✓ Zapisz pin</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Ukryty canvas do renderowania wysokiej rozdzielczości PNG -->
   <canvas id="export-canvas" class="hidden"></canvas>
-
-  <!-- Powiadomienie Toast -->
-  <div id="toast-box" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 border border-sky-500/60 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold items-center gap-2 pointer-events-none">
-    <i class="fa-solid fa-circle-check text-emerald-400"></i>
-    <span id="toast-text">Zapisano!</span>
-  </div>
+  <div id="toast-box" class="hidden"><span id="toast-text">Zapisano!</span></div>
 
   <script>
-    // =========================================================================
-    // DANE KATALOGOWE ZŁĄCZ MOLEX (W TYM MOLEX 43025 MICRO-FIT 3.0) I PALETA KOLORÓW
-    // =========================================================================
     const MOLEX_TYPES = [
-      { id: "microfit", name: "Molex Micro-Fit 3.0 (Seria 43025)", pitch: "3.00mm", seriesPrefix: "43025" },
-      { id: "minifit", name: "Molex Mini-Fit Jr. (Seria 5557 / 39-01)", pitch: "4.20mm", seriesPrefix: "5557" },
-      { id: "nanofit", name: "Molex Nano-Fit (Seria 105308)", pitch: "2.50mm", seriesPrefix: "105308" },
-      { id: "megafit", name: "Molex Mega-Fit (Seria 171692)", pitch: "5.70mm", seriesPrefix: "171692" },
-      { id: "kk254", name: "Molex KK 254 (Seria 2695)", pitch: "2.54mm", seriesPrefix: "2695" }
+      { id: "microfit", name: "Molex Micro-Fit 3.0 (Seria 43025)", pitch: "3.00mm" },
+      { id: "minifit", name: "Molex Mini-Fit Jr. (Seria 5557)", pitch: "4.20mm" },
+      { id: "nanofit", name: "Molex Nano-Fit (Seria 105308)", pitch: "2.50mm" },
+      { id: "megafit", name: "Molex Mega-Fit (Seria 171692)", pitch: "5.70mm" },
+      { id: "kk254", name: "Molex KK 254 (Seria 2695)", pitch: "2.54mm" }
     ];
 
-    // Pomocnicza funkcja wyliczająca katalogowy numer części Molex (np. 43025-1600 dla 16-pin)
     function getMolexCatalogPartNumber(conn) {
-      const paddedPins = String(conn.pins || 2).padStart(2, '0');
+      const paddedPins = String(conn.pins || 8).padStart(2, '0');
       if (conn.type === 'microfit') {
         const prefix = (conn.rows || 2) === 1 ? '43645' : '43025';
         return `${prefix}-${paddedPins}00`;
       }
-      if (conn.type === 'minifit') {
-        return `5557-${paddedPins}R`;
-      }
-      if (conn.type === 'nanofit') {
-        return `105308-12${paddedPins}`;
-      }
-      if (conn.type === 'megafit') {
-        return `171692-01${paddedPins}`;
-      }
+      if (conn.type === 'minifit') return `5557-${paddedPins}R`;
+      if (conn.type === 'nanofit') return `105308-12${paddedPins}`;
+      if (conn.type === 'megafit') return `171692-01${paddedPins}`;
       return `2695-${paddedPins}RP`;
     }
 
     const WIRE_COLORS = [
       { hex: "#ef4444", name: "Czerwony" },
-      { hex: "#1e293b", name: "Czarny" },
+      { hex: "#0f172a", name: "Czarny" },
       { hex: "#eab308", name: "Żółty" },
-      { hex: "#3b82f6", name: "Niebieski" },
-      { hex: "#22c55e", name: "Zielony" },
-      { hex: "#f97316", name: "Pomarańczowy" },
-      { hex: "#a855f7", name: "Fioletowy" },
+      { hex: "#2563eb", name: "Niebieski" },
+      { hex: "#16a34a", name: "Zielony" },
+      { hex: "#ea580c", name: "Pomarańczowy" },
+      { hex: "#9333ea", name: "Fioletowy" },
       { hex: "#854d0e", name: "Brązowy" },
-      { hex: "#94a3b8", name: "Szary" },
-      { hex: "#f8fafc", name: "Biały" },
-      { hex: "#ec4899", name: "Różowy" },
-      { hex: "#06b6d4", name: "Jasnoniebieski" }
+      { hex: "#64748b", name: "Szary" },
+      { hex: "#e2e8f0", name: "Biały" },
+      { hex: "#db2777", name: "Różowy" },
+      { hex: "#0891b2", name: "Turkusowy" }
     ];
 
-    // Domyślny stan: dwie czyste, niepołączone złączki 8-pinowe (J1 po lewej, J2 po prawej)
     function getDefaultState() {
       return {
-        pinNumberingMode: "molex", // 'molex' (1..N/2 w rzędzie 1, N/2+1..N w rzędzie 2) lub 'alternating' (1,2 / 3,4)
+        pinNumberingMode: "molex",
         connectorsA: [
           { id: "conn_a1", name: "J1", type: "microfit", pins: 8, rows: 2 }
         ],
@@ -805,31 +786,21 @@
     }
 
     let state = getDefaultState();
-    let interactionMode = 'wire'; // 'wire' (Łączenie przewodów) | 'pin' (Edycja pojedynczego pinu: opis, kolor obrysu, kolor pinu)
-    let selectedPin = null; // { side: 'A' | 'B', connId: string, pin: number }
-    let modalContext = null; // { fromConnId, fromPin, toConnId, toPin, editWireId, selectedColorHex, selectedColorName }
-    let pinModalContext = null; // { side, connId, pin, label, strokeColor, strokeName, fillColor, fillName }
-    let currentExportMode = 'sheet'; // 'sheet' (Schemat + Tabela) | 'schematic' (Tylko schemat)
+    let interactionMode = 'wire';
+    let selectedPin = null;
+    let modalContext = null;
+    let pinModalContext = null;
+    let currentExportMode = 'sheet';
     let latestGeneratedDataUrl = null;
     let toastTimeout = null;
 
-    const STORAGE_KEY = 'molex_harness_project_v3';
+    const STORAGE_KEY = 'molex_harness_clean_8pin_v1';
 
-    // =========================================================================
-    // GŁÓWNY SILNIK RYSOWANIA SCHEMATU SVG (REALISTYCZNY OBRYS MOLEX 43025-1600)
-    // =========================================================================
-    /**
-     * Tworzy realistyczną ścieżkę komory pinu Molex 43025 (Micro-Fit 3.0 / Mini-Fit):
-     * - Komory kwadratowe posiadają górny wpust zatrzasku terminala (terminal locking tang slot)
-     * - Komory kluczowane (D-shape / Chamfered) posiadają charakterystyczne dla Molex 43025
-     *   ścięcia polaryzacyjne 45° zapobiegające odwrotnemu wpięciu wtyku.
-     */
     function createMolexCavityPath(x, y, w, h, isKeyed, colIdx) {
-      const bevel = 10; // Ścięcie polaryzacyjne 45 stopni wg rysunku CAD Molex 43025
-      const r = 3;      // Delikatny promień technologiczny narożników
+      const bevel = 10;
+      const r = 3;
       if (isKeyed) {
         if (colIdx === 0) {
-          // Rząd 1 (lewa kolumna): ścięte zewnętrzne lewe narożniki (góra-lewo i dół-lewo) jak w gnieździe Molex 43025
           return [
             `M ${x + bevel} ${y}`,
             `L ${x + w - r} ${y}`,
@@ -842,7 +813,6 @@
             `Z`
           ].join(' ');
         } else {
-          // Rząd 2 (prawa kolumna): ścięte zewnętrzne prawe narożniki (góra-prawo i dół-prawo)
           return [
             `M ${x + r} ${y}`,
             `L ${x + w - bevel} ${y}`,
@@ -857,7 +827,6 @@
           ].join(' ');
         }
       }
-      // Standardowa komora prostokątna Molex 43025
       return [
         `M ${x + r} ${y}`,
         `L ${x + w - r} ${y}`,
@@ -872,12 +841,8 @@
       ].join(' ');
     }
 
-    /**
-     * Tworzy zewnętrzny kontur obudowy złącza Molex 43025 (z charakterystycznymi występami polaryzacyjnymi
-     * i sfazowanymi narożnikami korpusu).
-     */
     function createMolex43025BodyPath(x, y, w, h) {
-      const ch = 8; // Sfazowanie narożnika korpusu Molex 43025
+      const ch = 8;
       return [
         `M ${x + ch} ${y}`,
         `L ${x + w - ch} ${y}`,
@@ -900,57 +865,54 @@
       const housingsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
       const pinsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
       const wiresLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      const labelsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g"); // Warstwa etykiet na samej górze
 
       const pinCoords = {};
 
-      // Nagłówki kolumn STRONA A i STRONA B
       const sideATitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      sideATitle.setAttribute("x", "44");
+      sideATitle.setAttribute("x", "46");
       sideATitle.setAttribute("y", "24");
       sideATitle.setAttribute("fill", "#38bdf8");
-      sideATitle.setAttribute("font-family", "Inter, sans-serif");
-      sideATitle.setAttribute("font-size", "11.5");
+      sideATitle.setAttribute("font-family", "sans-serif");
+      sideATitle.setAttribute("font-size", "12");
       sideATitle.setAttribute("font-weight", "800");
-      sideATitle.textContent = "STRONA A (LEWA) – GNIAZDA MOLEX 43025 (RZUT CZOŁOWY)";
+      sideATitle.textContent = "STRONA A (LEWA) – GNIAZDA MOLEX 43025";
       topTitlesLayer.appendChild(sideATitle);
 
       const sideBTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      sideBTitle.setAttribute("x", "936");
+      sideBTitle.setAttribute("x", "934");
       sideBTitle.setAttribute("y", "24");
       sideBTitle.setAttribute("text-anchor", "end");
       sideBTitle.setAttribute("fill", "#34d399");
-      sideBTitle.setAttribute("font-family", "Inter, sans-serif");
-      sideBTitle.setAttribute("font-size", "11.5");
+      sideBTitle.setAttribute("font-family", "sans-serif");
+      sideBTitle.setAttribute("font-size", "12");
       sideBTitle.setAttribute("font-weight", "800");
-      sideBTitle.textContent = "STRONA B (PRAWA) – GNIAZDA MOLEX 43025 (RZUT CZOŁOWY)";
+      sideBTitle.textContent = "STRONA B (PRAWA) – GNIAZDA MOLEX 43025";
       topTitlesLayer.appendChild(sideBTitle);
 
-      // Wymiary pojedynczej komory pinu w gnieździe Molex 43025
       const cavW = 68;
       const cavH = 48;
-      const cavGapX = 10; // Ścianka działowa między rzędem 1 a rzędem 2
-      const cavGapY = 8;  // Ścianka działowa między kolejnymi komorami
-      
-      // Zwarty, kompaktowy nagłówek 4-wierszowy (interlinia ~1.1, pełny margines u dołu)
+      const cavGapX = 10;
+      const cavGapY = 8;
       const connHeaderHeight = 72;
       const cavityTopMargin = 8;
       const connPaddingBottom = 16;
-      const connGap = 44;
+      const connGap = 40;
 
+      // NAPRAWIONY ALGORYTM RZĘDÓW: Złącza 1-rzędowe rosną prawidłowo w dół!
       const getRowsCountForConnector = (c) => {
         const numRows = c.rows || 2;
-        if (numRows === 1) return 1;
+        if (numRows === 1) return c.pins; 
         return Math.ceil(c.pins / 2);
       };
 
-      let maxColumnBottomY = 660;
+      let maxColumnBottomY = 420;
 
       const drawConnectorColumn = (connectorsList, side) => {
         let currentY = 44;
         const boxX = (side === 'A') ? 46 : 746;
-        const primaryStroke = side === 'A' ? "#0ea5e9" : "#10b981";
+        const primaryStroke = side === 'A' ? "#0284c7" : "#059669";
         const headerFill = side === 'A' ? "#0369a1" : "#047857";
-        const headerBorder = side === 'A' ? "#38bdf8" : "#34d399";
 
         connectorsList.forEach(conn => {
           const molexInfo = MOLEX_TYPES.find(t => t.id === conn.type) || MOLEX_TYPES[0];
@@ -972,7 +934,6 @@
 
           const housingGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-          // 1. GÓRNY I DOLNY WYSTĘP POLARYZACYJNY OBUDOWY MOLEX 43025
           const topBossW = Math.min(76, bW * 0.44);
           const topBossX = lX + (bW - topBossW) / 2;
           const topBoss = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -989,11 +950,9 @@
           botBoss.setAttribute("stroke-width", "1.8");
           housingGroup.appendChild(botBoss);
 
-          // 2. BOCZNY MECHANIZM ZATRZASKOWY MOLEX 43025 (Rampa blokująca + mostek ochronny zatrzasku)
           const latchH = Math.min(110, Math.max(62, gridTotalH * 0.52));
           const latchY = tY + connHeaderHeight + cavityTopMargin + (gridTotalH - latchH) / 2;
           if (side === 'A') {
-            // Zatrzask po lewej (zewnętrznej) stronie Rzędu 1
             const latchBase = document.createElementNS("http://www.w3.org/2000/svg", "path");
             latchBase.setAttribute("d", `M ${lX} ${latchY} L ${lX - 14} ${latchY + 8} L ${lX - 14} ${latchY + latchH - 8} L ${lX} ${latchY + latchH} Z`);
             latchBase.setAttribute("fill", "#0f172a");
@@ -1001,32 +960,15 @@
             latchBase.setAttribute("stroke-width", "2");
             housingGroup.appendChild(latchBase);
 
-            // Środkowa dźwignia zatrzasku (ramp clip)
             const clipTab = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             clipTab.setAttribute("x", lX - 18);
             clipTab.setAttribute("y", latchY + latchH * 0.22);
-            clipTab.setAttribute("width", "6");
+            clipTab.setAttribute("width", "5");
             clipTab.setAttribute("height", latchH * 0.56);
             clipTab.setAttribute("rx", "2");
             clipTab.setAttribute("fill", primaryStroke);
             housingGroup.appendChild(clipTab);
-
-            const latchTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            const txtX = lX - 6;
-            const txtY = latchY + latchH / 2;
-            latchTxt.setAttribute("x", txtX);
-            latchTxt.setAttribute("y", txtY);
-            latchTxt.setAttribute("text-anchor", "middle");
-            latchTxt.setAttribute("dominant-baseline", "central");
-            latchTxt.setAttribute("transform", `rotate(-90 ${txtX} ${txtY})`);
-            latchTxt.setAttribute("fill", "#bae6fd");
-            latchTxt.setAttribute("font-family", "JetBrains Mono, monospace");
-            latchTxt.setAttribute("font-size", "7.5");
-            latchTxt.setAttribute("font-weight", "700");
-            latchTxt.textContent = "ZATRZASK";
-            housingGroup.appendChild(latchTxt);
           } else {
-            // Zatrzask po prawej (zewnętrznej) stronie dla Strony B
             const latchBase = document.createElementNS("http://www.w3.org/2000/svg", "path");
             latchBase.setAttribute("d", `M ${lX + bW} ${latchY} L ${lX + bW + 14} ${latchY + 8} L ${lX + bW + 14} ${latchY + latchH - 8} L ${lX + bW} ${latchY + latchH} Z`);
             latchBase.setAttribute("fill", "#0f172a");
@@ -1035,39 +977,22 @@
             housingGroup.appendChild(latchBase);
 
             const clipTab = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            clipTab.setAttribute("x", lX + bW + 12);
+            clipTab.setAttribute("x", lX + bW + 13);
             clipTab.setAttribute("y", latchY + latchH * 0.22);
-            clipTab.setAttribute("width", "6");
+            clipTab.setAttribute("width", "5");
             clipTab.setAttribute("height", latchH * 0.56);
             clipTab.setAttribute("rx", "2");
             clipTab.setAttribute("fill", primaryStroke);
             housingGroup.appendChild(clipTab);
-
-            const latchTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            const txtX = lX + bW + 6;
-            const txtY = latchY + latchH / 2;
-            latchTxt.setAttribute("x", txtX);
-            latchTxt.setAttribute("y", txtY);
-            latchTxt.setAttribute("text-anchor", "middle");
-            latchTxt.setAttribute("dominant-baseline", "central");
-            latchTxt.setAttribute("transform", `rotate(90 ${txtX} ${txtY})`);
-            latchTxt.setAttribute("fill", "#a7f3d0");
-            latchTxt.setAttribute("font-family", "JetBrains Mono, monospace");
-            latchTxt.setAttribute("font-size", "7.5");
-            latchTxt.setAttribute("font-weight", "700");
-            latchTxt.textContent = "ZATRZASK";
-            housingGroup.appendChild(latchTxt);
           }
 
-          // 3. KORPUS ZEWNĘTRZNY ZŁĄCZA MOLEX 43025 (fazowane narożniki CAD)
           const housingOuter = document.createElementNS("http://www.w3.org/2000/svg", "path");
           housingOuter.setAttribute("d", createMolex43025BodyPath(lX, tY, bW, bH));
-          housingOuter.setAttribute("fill", "#090d16");
+          housingOuter.setAttribute("fill", "#090d16"); // Ciemne tło gniazda
           housingOuter.setAttribute("stroke", primaryStroke);
           housingOuter.setAttribute("stroke-width", "2.6");
           housingGroup.appendChild(housingOuter);
 
-          // Wewnętrzna ramka technologiczna wnęki gniazdowej Molex 43025
           const gridStartX = lX + (bW - gridTotalW) / 2;
           const gridStartY = tY + connHeaderHeight + cavityTopMargin;
 
@@ -1082,20 +1007,6 @@
           shroudRecess.setAttribute("stroke-width", "1.5");
           housingGroup.appendChild(shroudRecess);
 
-          // Żebra działowe pomiędzy rzędami i komorami (charakterystyczna kratownica Molex 43025)
-          if (numCols === 2) {
-            const centerWallX = gridStartX + cavW + cavGapX / 2;
-            const centerWall = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            centerWall.setAttribute("x1", centerWallX);
-            centerWall.setAttribute("y1", gridStartY - 4);
-            centerWall.setAttribute("x2", centerWallX);
-            centerWall.setAttribute("y2", gridStartY + gridTotalH + 4);
-            centerWall.setAttribute("stroke", "#1e293b");
-            centerWall.setAttribute("stroke-width", "2");
-            housingGroup.appendChild(centerWall);
-          }
-
-          // 4. KOMPAKTOWY NAGŁÓWEK ZŁĄCZA (4 WIERSZE Z NISKĄ INTERLINIĄ ~1.1, CAŁKOWICIE WEWNĄTRZ TŁA)
           const titleBar = document.createElementNS("http://www.w3.org/2000/svg", "rect");
           titleBar.setAttribute("x", lX + 4);
           titleBar.setAttribute("y", tY + 4);
@@ -1103,53 +1014,46 @@
           titleBar.setAttribute("height", connHeaderHeight - 6);
           titleBar.setAttribute("rx", "6");
           titleBar.setAttribute("fill", headerFill);
-          titleBar.setAttribute("stroke", headerBorder);
-          titleBar.setAttribute("stroke-width", "0.8");
-          titleBar.setAttribute("stroke-opacity", "0.45");
           housingGroup.appendChild(titleBar);
 
-          // Wiersz 1 (y + 18): Oznaczenie złącza + układ pinów
           const titleText = document.createElementNS("http://www.w3.org/2000/svg", "text");
           titleText.setAttribute("x", lX + 12);
           titleText.setAttribute("y", tY + 19);
           titleText.setAttribute("fill", "#ffffff");
-          titleText.setAttribute("font-family", "Inter, sans-serif");
+          titleText.setAttribute("font-family", "sans-serif");
           titleText.setAttribute("font-size", "12.5");
           titleText.setAttribute("font-weight", "800");
           const layoutBadge = isDual ? `2×${numRows} (${conn.pins}-PIN)` : `1×${conn.pins} (${conn.pins}-PIN)`;
           titleText.textContent = `${conn.name} • ${layoutBadge}`;
           housingGroup.appendChild(titleText);
 
-          // Wiersz 2 (y + 33): Seria i numer katalogowy Molex (np. Molex 43025-1600)
           const subText = document.createElementNS("http://www.w3.org/2000/svg", "text");
           subText.setAttribute("x", lX + 12);
           subText.setAttribute("y", tY + 33);
           subText.setAttribute("fill", "#f1f5f9");
-          subText.setAttribute("font-family", "Inter, sans-serif");
+          subText.setAttribute("font-family", "sans-serif");
           subText.setAttribute("font-size", "10");
-          subText.setAttribute("font-weight", "600");
+          subText.setAttribute("font-weight", "700");
           subText.textContent = `MOLEX ${partNumber} (${molexInfo.pitch})`;
           housingGroup.appendChild(subText);
 
-          // Wiersz 3 (y + 46): Opis typu obudowy
           const descText = document.createElementNS("http://www.w3.org/2000/svg", "text");
           descText.setAttribute("x", lX + 12);
           descText.setAttribute("y", tY + 46);
           descText.setAttribute("fill", "#bae6fd");
-          descText.setAttribute("font-family", "JetBrains Mono, monospace");
+          descText.setAttribute("font-family", "monospace");
           descText.setAttribute("font-size", "8.8");
-          descText.setAttribute("font-weight", "500");
+          descText.setAttribute("font-weight", "600");
           descText.textContent = `Gniazdo z zatrzaskiem (${molexInfo.pitch})`;
           housingGroup.appendChild(descText);
 
-          // Wiersz 4 (y + 60): Etykiety rzędów RZĄD 1 (PIN 1) oraz RZĄD 2 z czystym marginesem od dołu (koniec tła na y + 70)
           if (numCols === 2) {
             const r1Label = document.createElementNS("http://www.w3.org/2000/svg", "text");
             r1Label.setAttribute("x", gridStartX + cavW / 2);
             r1Label.setAttribute("y", tY + 60);
             r1Label.setAttribute("text-anchor", "middle");
             r1Label.setAttribute("fill", "#fde047");
-            r1Label.setAttribute("font-family", "JetBrains Mono, monospace");
+            r1Label.setAttribute("font-family", "monospace");
             r1Label.setAttribute("font-size", "9");
             r1Label.setAttribute("font-weight", "800");
             r1Label.textContent = "▼ RZĄD 1 (PIN 1)";
@@ -1160,33 +1064,15 @@
             r2Label.setAttribute("y", tY + 60);
             r2Label.setAttribute("text-anchor", "middle");
             r2Label.setAttribute("fill", "#f8fafc");
-            r2Label.setAttribute("font-family", "JetBrains Mono, monospace");
+            r2Label.setAttribute("font-family", "monospace");
             r2Label.setAttribute("font-size", "9");
             r2Label.setAttribute("font-weight", "700");
             r2Label.textContent = "▼ RZĄD 2";
             housingGroup.appendChild(r2Label);
-          } else {
-            const r1Single = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            r1Single.setAttribute("x", lX + 12);
-            r1Single.setAttribute("y", tY + 60);
-            r1Single.setAttribute("fill", "#fde047");
-            r1Single.setAttribute("font-family", "JetBrains Mono, monospace");
-            r1Single.setAttribute("font-size", "9");
-            r1Single.setAttribute("font-weight", "800");
-            r1Single.textContent = "▼ RZĄD 1 (PIN 1..N)";
-            housingGroup.appendChild(r1Single);
           }
-
-          // Trójkątny znacznik polaryzacji Pin 1 wytłoczony na obudowie Molex 43025
-          const pin1Marker = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-          const p1Y = gridStartY + 10;
-          pin1Marker.setAttribute("points", `${lX + 3},${p1Y - 5} ${lX + 9},${p1Y} ${lX + 3},${p1Y + 5}`);
-          pin1Marker.setAttribute("fill", "#fbbf24");
-          housingGroup.appendChild(pin1Marker);
 
           housingsLayer.appendChild(housingGroup);
 
-          // 5. RYSOWANIE KOMÓR PINÓW (WG STANDARDU MOLEX 43025)
           const numberingMode = state.pinNumberingMode || "molex";
 
           for (let pin = 1; pin <= conn.pins; pin++) {
@@ -1232,7 +1118,6 @@
             const primaryWire = isConnected ? connectedWires[0] : null;
             const customPin = getPinMeta(conn.id, pin);
 
-            // Kluczowanie komór Molex 43025 (szachownica komora fazowana / komora kwadratowa)
             const isKeyedDShape = ((rowIdx + colIdx) % 2 === 1);
 
             const pinGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1243,26 +1128,25 @@
             });
 
             const resolvedStrokeColor = isSelected
-              ? "#f59e0b"
+              ? "#d97706"
               : (customPin && customPin.strokeColor
                   ? customPin.strokeColor
-                  : (isConnected ? (primaryWire.color || "#38bdf8") : "#475569"));
+                  : (isConnected ? (primaryWire.color || "#0284c7") : "#475569"));
 
             const resolvedStrokeWidth = isSelected
               ? "3.2"
-              : ((customPin && customPin.strokeColor) ? "2.6" : (isConnected ? "2.2" : "1.5"));
+              : ((customPin && customPin.strokeColor) ? "2.6" : (isConnected ? "2.4" : "1.6"));
 
             const resolvedCavityFill = isSelected
               ? "#451a03"
               : (customPin && customPin.fillColor
                   ? hexToRgba(customPin.fillColor, 0.34)
-                  : (isConnected ? "#111c33" : "#0b1324"));
+                  : (isConnected ? "#111c33" : "#0b1324")); // Ciemne wypełnienie wolnych komór
 
             const resolvedTerminalFill = (customPin && customPin.fillColor)
               ? customPin.fillColor
-              : (isConnected ? (primaryWire.color || "#38bdf8") : (customPin && customPin.strokeColor ? customPin.strokeColor : "#1e293b"));
+              : (isConnected ? (primaryWire.color || "#0284c7") : "#1e293b");
 
-            // Obrys komory Molex 43025
             const cavityPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
             cavityPath.setAttribute("d", createMolexCavityPath(cavX, cavY, cavW, cavH, isKeyedDShape, colIdx));
             cavityPath.setAttribute("fill", resolvedCavityFill);
@@ -1270,39 +1154,28 @@
             cavityPath.setAttribute("stroke-width", resolvedStrokeWidth);
             pinGroup.appendChild(cavityPath);
 
-            // Wpust zatrzasku terminala (terminal locking tang slot u góry komory Molex 43025)
-            const tangSlot = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            tangSlot.setAttribute("x", centerX - 6);
-            tangSlot.setAttribute("y", cavY + 1);
-            tangSlot.setAttribute("width", "12");
-            tangSlot.setAttribute("height", "3");
-            tangSlot.setAttribute("fill", "#1e293b");
-            pinGroup.appendChild(tangSlot);
-
-            // Plakietka z numerem pinu (#1..#16)
             const pinBadgeBg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             pinBadgeBg.setAttribute("x", cavX + 5);
             pinBadgeBg.setAttribute("y", cavY + 5);
             pinBadgeBg.setAttribute("width", "24");
             pinBadgeBg.setAttribute("height", "14");
             pinBadgeBg.setAttribute("rx", "3");
-            pinBadgeBg.setAttribute("fill", isSelected ? "#f59e0b" : ((customPin && customPin.strokeColor) ? customPin.strokeColor : "#1e293b"));
+            pinBadgeBg.setAttribute("fill", isSelected ? "#d97706" : ((customPin && customPin.strokeColor) ? customPin.strokeColor : "#1e293b"));
             pinGroup.appendChild(pinBadgeBg);
 
             const pinNumText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             pinNumText.setAttribute("x", cavX + 17);
             pinNumText.setAttribute("y", cavY + 15);
             pinNumText.setAttribute("text-anchor", "middle");
-            pinNumText.setAttribute("fill", isSelected ? "#000000" : "#ffffff");
-            pinNumText.setAttribute("font-family", "JetBrains Mono, monospace");
+            pinNumText.setAttribute("fill", "#ffffff");
+            pinNumText.setAttribute("font-family", "monospace");
             pinNumText.setAttribute("font-size", "9.5");
             pinNumText.setAttribute("font-weight", "800");
             pinNumText.textContent = `#${pin}`;
             pinGroup.appendChild(pinNumText);
 
-            // Styk żeński Molex 43030 w komorze (punkt wpięcia przewodu)
             const termX = centerX + 13;
-            const termY = cavY + 13;
+            const termY = cavY + 12;
 
             const terminalOuter = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             terminalOuter.setAttribute("x", termX - 7);
@@ -1311,7 +1184,7 @@
             terminalOuter.setAttribute("height", "14");
             terminalOuter.setAttribute("rx", "3");
             terminalOuter.setAttribute("fill", resolvedTerminalFill);
-            terminalOuter.setAttribute("stroke", isSelected ? "#fde047" : ((customPin && customPin.strokeColor) ? customPin.strokeColor : "#94a3b8"));
+            terminalOuter.setAttribute("stroke", "#1e293b");
             terminalOuter.setAttribute("stroke-width", "1.6");
             pinGroup.appendChild(terminalOuter);
 
@@ -1324,16 +1197,15 @@
             terminalPin.setAttribute("fill", (isConnected || (customPin && customPin.fillColor)) ? "#ffffff" : "#475569");
             pinGroup.appendChild(terminalPin);
 
-            // Opis sygnału / pinu na dole komory
             const hasCustomLabel = Boolean(customPin && customPin.label);
             const sigLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
             sigLabel.setAttribute("x", centerX);
             sigLabel.setAttribute("y", cavY + cavH - 7);
             sigLabel.setAttribute("text-anchor", "middle");
             sigLabel.setAttribute("fill", hasCustomLabel ? "#ffffff" : (isConnected ? "#fde047" : "#64748b"));
-            sigLabel.setAttribute("font-family", "JetBrains Mono, monospace");
+            sigLabel.setAttribute("font-family", "monospace");
             sigLabel.setAttribute("font-size", "8.5");
-            sigLabel.setAttribute("font-weight", (hasCustomLabel || isConnected) ? "800" : "500");
+            sigLabel.setAttribute("font-weight", (hasCustomLabel || isConnected) ? "800" : "600");
 
             let shortSig = "WOLNY";
             if (hasCustomLabel) {
@@ -1348,20 +1220,23 @@
           }
 
           currentY += boxHeight + connGap;
-        });
+        }); // END connectorsList.forEach
 
         if (currentY + 20 > maxColumnBottomY) {
           maxColumnBottomY = currentY + 20;
         }
-      };
+      }; // END drawConnectorColumn
 
       drawConnectorColumn(state.connectorsA, 'A');
       drawConnectorColumn(state.connectorsB, 'B');
 
-      // Dynamiczne dopasowanie wysokości viewBox SVG, aby żadne złącze nigdy nie było ucięte
-      svg.setAttribute("viewBox", `0 0 980 ${Math.max(660, maxColumnBottomY)}`);
+      svg.setAttribute("viewBox", `0 0 980 ${Math.max(680, maxColumnBottomY)}`);
 
-      // Rysowanie przewodów łączących
+      // =========================================================================
+      // RYSOWANIE KABLI I BEZKOLIZYJNYCH ETYKIET
+      // =========================================================================
+      const placedLabels = [];
+
       state.wires.forEach((w, idx) => {
         const ptA = pinCoords[`A_${w.fromConnId}_${w.fromPin}`];
         const ptB = pinCoords[`B_${w.toConnId}_${w.toPin}`];
@@ -1405,42 +1280,101 @@
         path.setAttribute("stroke-linecap", "round");
         wireGroup.appendChild(path);
 
-        const t = 0.5;
-        const midX = (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * cx1 + 3 * (1 - t) * t ** 2 * cx2 + t ** 3 * y2 * 0 + t ** 3 * x2;
-        const midY = (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * cy1 + 3 * (1 - t) * t ** 2 * cy2 + t ** 3 * y2;
+        wiresLayer.appendChild(wireGroup);
 
-        const labelStr = w.signal ? `${w.signal} (${w.colorName})` : `${w.colorName}`;
-        const badgeWidth = Math.max(70, labelStr.length * 6.2 + 16);
+        // Algorytm antykolizyjny dla etykiet na samej górze
+        const labelGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        labelGroup.style.cursor = "pointer";
+        
+        labelGroup.addEventListener("mouseenter", () => {
+          outline.style.setProperty("stroke-width", "6px", "important");
+          path.style.setProperty("stroke-width", "6px", "important");
+        });
+        labelGroup.addEventListener("mouseleave", () => {
+          outline.style.removeProperty("stroke-width");
+          path.style.removeProperty("stroke-width");
+        });
+        labelGroup.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openWireConfigModal(w.fromConnId, w.fromPin, w.toConnId, w.toPin, w);
+        });
+
+        const labelStr = w.signal ? `${w.signal} (${w.colorName}, ${w.awg || '22 AWG'})` : `${w.colorName} (${w.awg || '22 AWG'})`;
+        const badgeWidth = Math.max(80, labelStr.length * 6.2 + 16);
+
+        const tCandidates = [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.45, 0.55, 0.35, 0.65];
+        let bestX = 0, bestY = 0;
+        let found = false;
+
+        for (let t of tCandidates) {
+          const mx = (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * cx1 + 3 * (1 - t) * t ** 2 * cx2 + t ** 3 * x2;
+          const my = (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * cy1 + 3 * (1 - t) * t ** 2 * cy2 + t ** 3 * y2;
+
+          const box = { left: mx - badgeWidth / 2 - 8, right: mx + badgeWidth / 2 + 8, top: my - 13, bottom: my + 13 };
+          let overlap = false;
+          
+          for (let p of placedLabels) {
+            if (!(box.right < p.left || box.left > p.right || box.bottom < p.top || box.top > p.bottom)) {
+              overlap = true;
+              break;
+            }
+          }
+
+          if (!overlap) {
+            bestX = mx; bestY = my; found = true; break;
+          }
+        }
+
+        if (!found) {
+          const t = 0.5;
+          bestX = (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * cx1 + 3 * (1 - t) * t ** 2 * cx2 + t ** 3 * x2;
+          bestY = (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * cy1 + 3 * (1 - t) * t ** 2 * cy2 + t ** 3 * y2;
+          
+          let shift = 0; let dir = 1;
+          for(let i=1; i<30; i++) {
+            shift = (i * 12) * dir;
+            dir *= -1;
+            const box = { left: bestX - badgeWidth / 2 - 4, right: bestX + badgeWidth / 2 + 4, top: bestY + shift - 10, bottom: bestY + shift + 10 };
+            let overlap = false;
+            for (let p of placedLabels) {
+              if (!(box.right < p.left || box.left > p.right || box.bottom < p.top || box.top > p.bottom)) { overlap = true; break; }
+            }
+            if(!overlap) { bestY += shift; break; }
+          }
+        }
+
+        placedLabels.push({ left: bestX - badgeWidth / 2, right: bestX + badgeWidth / 2, top: bestY - 9, bottom: bestY + 9 });
 
         const badgeRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        badgeRect.setAttribute("x", midX - badgeWidth / 2);
-        badgeRect.setAttribute("y", midY - 9);
+        badgeRect.setAttribute("x", bestX - badgeWidth / 2);
+        badgeRect.setAttribute("y", bestY - 9);
         badgeRect.setAttribute("width", badgeWidth);
         badgeRect.setAttribute("height", "18");
         badgeRect.setAttribute("rx", "5");
         badgeRect.setAttribute("fill", "#0f172a");
         badgeRect.setAttribute("stroke", w.color || "#475569");
         badgeRect.setAttribute("stroke-width", "1.4");
-        wireGroup.appendChild(badgeRect);
+        labelGroup.appendChild(badgeRect);
 
         const badgeText = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        badgeText.setAttribute("x", midX);
-        badgeText.setAttribute("y", midY + 3.5);
+        badgeText.setAttribute("x", bestX);
+        badgeText.setAttribute("y", bestY + 3.5);
         badgeText.setAttribute("text-anchor", "middle");
         badgeText.setAttribute("fill", "#f8fafc");
         badgeText.setAttribute("font-family", "JetBrains Mono, monospace");
         badgeText.setAttribute("font-size", "9.5");
         badgeText.setAttribute("font-weight", "600");
         badgeText.textContent = labelStr;
-        wireGroup.appendChild(badgeText);
+        labelGroup.appendChild(badgeText);
 
-        wiresLayer.appendChild(wireGroup);
+        labelsLayer.appendChild(labelGroup); // Na najwyższej warstwie
       });
 
       svg.appendChild(topTitlesLayer);
       svg.appendChild(housingsLayer);
       svg.appendChild(pinsLayer);
       svg.appendChild(wiresLayer);
+      svg.appendChild(labelsLayer);
     }
 
     // =========================================================================
@@ -1448,7 +1382,7 @@
     // =========================================================================
     function getSanitizedBaseFilename() {
       const el = document.getElementById('export-filename-input') || document.getElementById('modal-filename-input');
-      const raw = (el && el.value ? el.value.trim() : '') || `schemat-molex-43025-${new Date().toISOString().slice(0, 10)}`;
+      const raw = (el && el.value ? el.value.trim() : '') || 'wiazka-molex-43025';
       return raw.replace(/[^a-zA-Z0-9_-]/g, '_');
     }
 
@@ -1459,23 +1393,14 @@
       if (b && b.value !== val) b.value = val;
     }
 
-    /**
-     * Uniwersalna funkcja zapisu pliku Blob na każdym systemie operacyjnym:
-     * 1. Na komputerach (Windows / macOS / Linux z Chrome/Edge/Opera) wywołuje natywne okno "Zapisz jako..." (showSaveFilePicker), jeśli jest dostępne.
-     * 2. W pozostałych przeglądarkach (Firefox, Safari, Android, iOS) wykonuje bezpieczne pobranie strumienia Blob.
-     */
     async function saveBlobUniversal(blob, fileName, mimeType, description = 'Plik') {
-      // Próba użycia File System Access API na desktopie (tylko gdy nie jesteśmy na ekranie dotykowym iOS/Android)
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
       if (!isMobile && window.showSaveFilePicker) {
         try {
           const ext = '.' + (fileName.split('.').pop() || 'dat');
           const handle = await window.showSaveFilePicker({
             suggestedName: fileName,
-            types: [{
-              description: description,
-              accept: { [mimeType]: [ext] }
-            }]
+            types: [{ description, accept: { [mimeType]: [ext] } }]
           });
           const writable = await handle.createWritable();
           await writable.write(blob);
@@ -1484,11 +1409,9 @@
           return true;
         } catch (err) {
           if (err && err.name === 'AbortError') return false;
-          // W razie blokady w iframe przechodzimy płynnie do klasycznego pobrania poniżej
         }
       }
 
-      // Klasyczne pobieranie działające w każdej przeglądarce (Windows, Mac, Android, iOS, Linux)
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
@@ -1504,30 +1427,10 @@
       return true;
     }
 
-    // 1. POBIERANIE OBRAZU PNG (Komputer PC/Mac + Telefon Android/iOS)
-    function downloadSchematicPNG() {
-      const baseName = getSanitizedBaseFilename();
-      const fileName = `${baseName}.png`;
-      generatePNGDataURL(currentExportMode, async (dataUrl) => {
-        try {
-          const file = dataURLtoFile(dataUrl, fileName);
-          await saveBlobUniversal(file, fileName, 'image/png', 'Obraz PNG Schematu Molex');
-        } catch (e) {
-          const a = document.createElement('a');
-          a.href = dataUrl;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          showToast(`Pobrano obraz: ${fileName}`);
-        }
-      });
-    }
-
-    // 2. POBIERANIE WEKTOROWEGO SCHEMATU CAD (.SVG)
-    async function downloadVectorSVG() {
+    // --- FUNKCJA TWORZĄCA BIAŁY MOTYW W LOCIE DLA WYDRUKU / PDF / PNG ---
+    function getLightThemeSVGBlob() {
       const svgEl = document.getElementById('harness-svg');
-      if (!svgEl) return;
+      if (!svgEl) return null;
       const viewBox = (svgEl.getAttribute('viewBox') || '0 0 980 680').split(' ').map(Number);
       const svgW = viewBox[2] || 980;
       const svgH = viewBox[3] || 680;
@@ -1537,278 +1440,46 @@
       clone.setAttribute("width", svgW);
       clone.setAttribute("height", svgH);
 
-      // Dodaj ciemne tło inżynieryjne bezpośrednio do pliku SVG
-      const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      bgRect.setAttribute("x", "0");
-      bgRect.setAttribute("y", "0");
-      bgRect.setAttribute("width", svgW);
-      bgRect.setAttribute("height", svgH);
-      bgRect.setAttribute("fill", "#0b1120");
-      clone.insertBefore(bgRect, clone.firstChild);
+      // Usunięto dodawanie bgRect przed konwersją, aby regex go nie nadpisał
+      let xml = new XMLSerializer().serializeToString(clone);
+      
+      xml = xml.replace(/fill="#ffffff"/gi, 'fill="TMP_DARK"')
+               .replace(/fill="#f8fafc"/gi, 'fill="TMP_DARK"')
+               .replace(/fill="#090d16"/gi, 'fill="TMP_LIGHT1"')
+               .replace(/fill="#0b1120"/gi, 'fill="TMP_LIGHT1"')
+               .replace(/fill="#050811"/gi, 'fill="TMP_LIGHT2"')
+               .replace(/fill="#0f172a"/gi, 'fill="TMP_LIGHT3"');
+               
+      xml = xml.replace(/fill="TMP_DARK"/g, 'fill="#0f172a"')
+               .replace(/fill="TMP_LIGHT1"/g, 'fill="#f8fafc"')
+               .replace(/fill="TMP_LIGHT2"/g, 'fill="#e2e8f0"')
+               .replace(/fill="TMP_LIGHT3"/g, 'fill="#ffffff"')
+               .replace(/fill="#f1f5f9"/gi, 'fill="#334155"')
+               .replace(/fill="#bae6fd"/gi, 'fill="#0284c7"')
+               .replace(/fill="#a7f3d0"/gi, 'fill="#059669"')
+               .replace(/fill="#e0f2fe"/gi, 'fill="#0284c7"')
+               .replace(/stroke="#1e293b"/gi, 'stroke="#94a3b8"')
+               .replace(/stroke="#020617"/gi, 'stroke="#e2e8f0"')
+               .replace(/fill="rgba\(15, 23, 42,/gi, 'fill="rgba(255, 255, 255,'); 
 
-      const svgXml = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + new XMLSerializer().serializeToString(clone);
-      const blob = new Blob([svgXml], { type: "image/svg+xml;charset=utf-8" });
-      const fileName = `${getSanitizedBaseFilename()}.svg`;
-      await saveBlobUniversal(blob, fileName, 'image/svg+xml', 'Wektorowy Schemat SVG');
+      // Wstrzyknięcie tła po zmianach kolorów, by uniknąć jego zamiany na ciemne!
+      const bgRect = `<rect x="0" y="0" width="${svgW}" height="${svgH}" fill="#ffffff" />`;
+      xml = xml.replace(/(<svg[^>]*>)/i, `$1${bgRect}`);
+
+      return { xml, svgW, svgH };
     }
 
-    // 3. POBIERANIE TABELI POŁĄCZEŃ DO EXCELA (.CSV z UTF-8 BOM dla polskich znaków)
-    async function downloadCSVTable() {
-      const lines = [];
-      lines.push(["Lp", "Zlacze_Lewa_A", "Part_Number_A", "Pin_A", "Zlacze_Prawa_B", "Part_Number_B", "Pin_B", "Kolor_Przewodu", "Kod_HEX", "Opis_Sygnalu", "Przekroj_AWG"].join(";"));
-
-      state.wires.forEach((w, idx) => {
-        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-        const cB = state.connectorsB.find(c => c.id === w.toConnId);
-        const row = [
-          idx + 1,
-          cA ? cA.name : "A",
-          cA ? getMolexCatalogPartNumber(cA) : "-",
-          `Pin ${w.fromPin}`,
-          cB ? cB.name : "B",
-          cB ? getMolexCatalogPartNumber(cB) : "-",
-          `Pin ${w.toPin}`,
-          w.colorName || "",
-          w.color || "",
-          (w.signal || "-").replace(/;/g, ","),
-          w.awg || "22 AWG"
-        ];
-        lines.push(row.join(";"));
-      });
-
-      // Dodaj sekcję indywidualnie opisanych pinów jeśli istnieją
-      const customPins = Object.values(state.pinMeta || {});
-      if (customPins.length > 0) {
-        lines.push("");
-        lines.push(["INDYWIDUALNIE OPISANE PINY", "Zlacze", "Pin", "Opis_Pinu", "Kolor_Obrysu", "Kolor_Wypelnienia"].join(";"));
-        const allConns = [...state.connectorsA, ...state.connectorsB];
-        customPins.forEach((pm, i) => {
-          const c = allConns.find(x => x.id === pm.connId);
-          lines.push([
-            i + 1,
-            c ? c.name : pm.connId,
-            `Pin ${pm.pin}`,
-            (pm.label || "-").replace(/;/g, ","),
-            pm.strokeName || pm.strokeColor || "Domyslny",
-            pm.fillName || pm.fillColor || "Domyslny"
-          ].join(";"));
-        });
-      }
-
-      const csvContent = "\uFEFF" + lines.join("\r\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-      const fileName = `${getSanitizedBaseFilename()}.csv`;
-      await saveBlobUniversal(blob, fileName, 'text/csv', 'Tabela Montażowa CSV (Excel)');
-    }
-
-    // 4. POBIERANIE SAMODZIELNEGO RAPORTU OFFLINE (.HTML) DZIAŁAJĄCEGO NA KAŻDYM SYSTEMIE
-    async function downloadStandaloneHTMLReport() {
-      const svgEl = document.getElementById('harness-svg');
-      const svgHtml = svgEl ? svgEl.outerHTML : '';
-      const rowsHtml = state.wires.map((w, i) => {
-        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
-        const cB = state.connectorsB.find(c => c.id === w.toConnId);
-        return `<tr>
-          <td>${i + 1}</td>
-          <td><b>${cA ? cA.name : '?'}</b> (${cA ? getMolexCatalogPartNumber(cA) : ''})</td>
-          <td><b>Pin ${w.fromPin}</b></td>
-          <td><b>${cB ? cB.name : '?'}</b> (${cB ? getMolexCatalogPartNumber(cB) : ''})</td>
-          <td><b>Pin ${w.toPin}</b></td>
-          <td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${w.color};vertical-align:middle;margin-right:6px;border:1px solid #fff;"></span>${w.colorName}</td>
-          <td style="color:#fbbf24;font-family:monospace;font-weight:bold;">${w.signal || '-'}</td>
-          <td>${w.awg}</td>
-        </tr>`;
-      }).join('');
-
-      const reportHtml = `<!DOCTYPE html>
-<html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dokumentacja Wiązki Molex – ${getSanitizedBaseFilename()}</title>
-<style>
-  body { background:#0b1120; color:#f8fafc; font-family:system-ui,-apple-system,sans-serif; margin:0; padding:20px; }
-  .wrap { max-width:1100px; margin:0 auto; }
-  h1 { font-size:20px; color:#38bdf8; margin-bottom:4px; }
-  .sub { font-size:12px; color:#94a3b8; margin-bottom:16px; }
-  .svg-box { background:#090d16; border:1px solid #1e293b; border-radius:14px; padding:12px; overflow-x:auto; margin-bottom:24px; }
-  svg { width:100%; height:auto; display:block; }
-  table { width:100%; border-collapse:collapse; font-size:13px; background:#0f172a; border-radius:10px; overflow:hidden; }
-  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid #1e293b; }
-  th { background:#1e293b; color:#bae6fd; font-size:11px; text-transform:uppercase; }
-  @media print { body { background:#fff; color:#000; } .svg-box { border-color:#ccc; } th { background:#eee; color:#000; } td { border-color:#ddd; } }
-</style>
-</head>
-<body>
-  <div class="wrap">
-    <h1>Dokumentacja Schematu Wiązki Molex (Seria 43025)</h1>
-    <div class="sub">Wygenerowano: ${new Date().toLocaleString('pl-PL')} • Plik działa offline na Windows, macOS, Android, iOS i Linux</div>
-    <div class="svg-box">${svgHtml}</div>
-    <h2>Tabela Połączeń Przewodowych (Wire Run List)</h2>
-    <table>
-      <thead>
-        <tr><th>Lp.</th><th>Złącze Lewa (A)</th><th>Pin A</th><th>Złącze Prawa (B)</th><th>Pin B</th><th>Kolor przewodu</th><th>Opis / Sygnał</th><th>Przekrój</th></tr>
-      </thead>
-      <tbody>${rowsHtml}</tbody>
-    </table>
-  </div>
-</body>
-</html>`;
-
-      const blob = new Blob([reportHtml], { type: "text/html;charset=utf-8" });
-      const fileName = `${getSanitizedBaseFilename()}.html`;
-      await saveBlobUniversal(blob, fileName, 'text/html', 'Dokumentacja HTML Offline');
-    }
-
-    // 5. ZAPIS I UDOSTĘPNIANIE PLIKU PROJEKTU (.JSON) NA WSZYSTKICH SYSTEMACH
-    async function saveProjectUniversalJSON() {
-      const jsonStr = JSON.stringify(state, null, 2);
-      const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
-      const fileName = `${getSanitizedBaseFilename()}.json`;
-      await saveBlobUniversal(blob, fileName, 'application/json', 'Projekt Wiązki Molex JSON');
-    }
-
-    function downloadProjectJSONFile() {
-      saveProjectUniversalJSON();
-    }
-
-    async function shareProjectFileMobile() {
-      const jsonStr = JSON.stringify(state, null, 2);
-      const fileName = `${getSanitizedBaseFilename()}.json`;
-      try {
-        const file = new File([jsonStr], fileName, { type: "application/json" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: 'Projekt Wiązki Molex (.json)',
-            text: 'Plik projektu schematu wiązki Molex.'
-          });
-          showToast("Otwarto menu udostępniania pliku projektu!");
-          return;
-        }
-      } catch (err) {
-        if (err && err.name === 'AbortError') return;
-      }
-      await saveProjectUniversalJSON();
-    }
-
-    // Obsługa Przeciągnij i Upuść (Drag & Drop) dla pliku projektu JSON na PC/Mac
-    function handleDragOver(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const dz = document.getElementById('drop-zone-area');
-      if (dz) dz.classList.add('border-sky-400', 'bg-sky-950/30');
-    }
-
-    function handleDragLeave(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const dz = document.getElementById('drop-zone-area');
-      if (dz) dz.classList.remove('border-sky-400', 'bg-sky-950/30');
-    }
-
-    function handleFileDrop(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      handleDragLeave(event);
-      const files = event.dataTransfer && event.dataTransfer.files;
-      if (files && files.length > 0) {
-        readAndApplyProjectFile(files[0]);
-      }
-    }
-
-    function readAndApplyProjectFile(file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const raw = e.target.result;
-          const parsed = JSON.parse(raw);
-          if (parsed && Array.isArray(parsed.connectorsA) && Array.isArray(parsed.connectorsB) && Array.isArray(parsed.wires)) {
-            state = parsed;
-            if (!state.pinNumberingMode) state.pinNumberingMode = "molex";
-            if (!state.pinMeta || typeof state.pinMeta !== 'object') state.pinMeta = {};
-            renderAll();
-            goHomeView();
-            showToast(`Wczytano projekt: ${file.name}`);
-          } else {
-            showToast("Plik nie zawiera prawidłowego projektu wiązki Molex!");
-          }
-        } catch (err) {
-          showToast("Błąd odczytu pliku projektu JSON!");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // Kopiowanie kodu projektu do schowka (kompatybilne z iOS, Android, Windows, macOS)
-    function copyProjectToClipboard() {
-      const jsonStr = JSON.stringify(state, null, 2);
-      const tempInput = document.createElement('textarea');
-      tempInput.value = jsonStr;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(tempInput);
-      showToast("Skopiowano kod projektu do schowka!");
-    }
-
-    // Wczytanie pliku projektu z przycisku wyboru pliku
-    function handleProjectFileUpload(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      readAndApplyProjectFile(file);
-      event.target.value = '';
-    }
-
-    function loadProjectFromInput() {
-      const input = document.getElementById('import-json-input');
-      if (!input) return;
-      const raw = input.value.trim();
-      if (!raw) {
-        showToast("Najpierw wklej kod projektu w pole tekstowe!");
-        return;
-      }
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed && Array.isArray(parsed.connectorsA) && Array.isArray(parsed.connectorsB) && Array.isArray(parsed.wires)) {
-          state = parsed;
-          if (!state.pinNumberingMode) state.pinNumberingMode = "molex";
-          if (!state.pinMeta || typeof state.pinMeta !== 'object') state.pinMeta = {};
-          input.value = '';
-          renderAll();
-          goHomeView();
-          showToast("Pomyślnie wczytano projekt ze schowka!");
-        } else {
-          showToast("Nieprawidłowy format kodu projektu!");
-        }
-      } catch (e) {
-        showToast("Błąd odczytu kodu projektu!");
-      }
-    }
-
-    // =========================================================================
-    // GENERATOR WYSOKIEJ ROZDZIELCZOŚCI OBRAZU PNG (SCHEMAT + TABELA MONTAŻOWA)
-    // =========================================================================
     function generatePNGDataURL(mode, callback) {
-      const svgEl = document.getElementById('harness-svg');
-      if (!svgEl) return;
+      const lightSvg = getLightThemeSVGBlob();
+      if (!lightSvg) return;
+      const { xml, svgW, svgH } = lightSvg;
 
-      const viewBox = (svgEl.getAttribute('viewBox') || '0 0 980 680').split(' ').map(Number);
-      const svgW = viewBox[2] || 980;
-      const svgH = viewBox[3] || 680;
-
-      const clone = svgEl.cloneNode(true);
-      clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      clone.setAttribute("width", svgW);
-      clone.setAttribute("height", svgH);
-
-      const svgXml = new XMLSerializer().serializeToString(clone);
-      const svgBlob = new Blob([svgXml], { type: "image/svg+xml;charset=utf-8" });
+      const svgBlob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
       const url = URL.createObjectURL(svgBlob);
 
       const img = new Image();
       img.onload = function() {
-        const scale = 2; // Wysoka rozdzielczość Retina
+        const scale = 2;
         const includeTable = (mode === 'sheet');
         const rowH = 28;
         const customPinsList = Object.values(state.pinMeta || {}).filter(p => p && (p.label || p.strokeColor || p.fillColor));
@@ -1834,27 +1505,18 @@
         ctx.save();
         ctx.scale(scale, scale);
 
-        // Tło inżynieryjne
-        ctx.fillStyle = "#0b1120";
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, totalW, totalH);
 
-        // Siatka CAD
-        ctx.strokeStyle = "rgba(56, 189, 248, 0.05)";
+        ctx.strokeStyle = "rgba(2, 132, 199, 0.12)";
         ctx.lineWidth = 1;
         for (let gx = 0; gx < totalW; gx += 20) {
-          ctx.beginPath();
-          ctx.moveTo(gx, 0);
-          ctx.lineTo(gx, svgH);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, totalH); ctx.stroke();
         }
-        for (let gy = 0; gy < svgH; gy += 20) {
-          ctx.beginPath();
-          ctx.moveTo(0, gy);
-          ctx.lineTo(totalW, gy);
-          ctx.stroke();
+        for (let gy = 0; gy < totalH; gy += 20) {
+          ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(totalW, gy); ctx.stroke();
         }
 
-        // Narysuj schemat SVG
         ctx.drawImage(img, 0, 0, svgW, svgH);
 
         if (includeTable) {
@@ -1862,24 +1524,25 @@
           const padX = 40;
           const tableW = totalW - padX * 2;
 
-          // Nagłówek tabeli połączeń
-          ctx.fillStyle = "#0ea5e9";
-          ctx.font = "bold 13px Inter, sans-serif";
-          ctx.fillText("TABELA MONTAŻOWA POŁĄCZEŃ PRZEWODOWYCH (WIRE RUN LIST - MOLEX 43025)", padX, curY);
+          ctx.fillStyle = "#0284c7";
+          ctx.font = "bold 13px sans-serif";
+          ctx.fillText("TABELA MONTAŻOWA POŁĄCZEŃ PRZEWODOWYCH (WIRE RUN LIST)", padX, curY);
           curY += 12;
 
-          ctx.fillStyle = "#1e293b";
+          ctx.fillStyle = "#f1f5f9";
           ctx.fillRect(padX, curY, tableW, 28);
+          ctx.strokeStyle = "#cbd5e1";
+          ctx.strokeRect(padX, curY, tableW, 28);
 
-          ctx.fillStyle = "#bae6fd";
-          ctx.font = "bold 10.5px Inter, sans-serif";
+          ctx.fillStyle = "#334155";
+          ctx.font = "bold 10px sans-serif";
           const cols = [
             { x: padX + 10, label: "LP." },
             { x: padX + 55, label: "ZŁĄCZE A (LEWA)" },
-            { x: padX + 230, label: "PIN A" },
-            { x: padX + 305, label: "ZŁĄCZE B (PRAWA)" },
-            { x: padX + 480, label: "PIN B" },
-            { x: padX + 555, label: "KOLOR PRZEWODU" },
+            { x: padX + 220, label: "PIN A" },
+            { x: padX + 300, label: "ZŁĄCZE B (PRAWA)" },
+            { x: padX + 465, label: "PIN B" },
+            { x: padX + 545, label: "KOLOR PRZEWODU" },
             { x: padX + 700, label: "OPIS / SYGNAŁ" },
             { x: padX + 835, label: "PRZEKRÓJ" }
           ];
@@ -1887,56 +1550,57 @@
           curY += 28;
 
           if (state.wires.length === 0) {
-            ctx.fillStyle = "#0f172a";
+            ctx.fillStyle = "#ffffff";
             ctx.fillRect(padX, curY, tableW, rowH);
+            ctx.strokeRect(padX, curY, tableW, rowH);
             ctx.fillStyle = "#64748b";
-            ctx.font = "11px Inter, sans-serif";
+            ctx.font = "11px sans-serif";
             ctx.fillText("Brak zdefiniowanych połączeń przewodowych.", padX + 12, curY + 18);
             curY += rowH;
           } else {
             state.wires.forEach((w, idx) => {
-              ctx.fillStyle = idx % 2 === 0 ? "#0f172a" : "#131c31";
+              ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
               ctx.fillRect(padX, curY, tableW, rowH);
+              ctx.strokeRect(padX, curY, tableW, rowH);
 
               const cA = state.connectorsA.find(c => c.id === w.fromConnId);
               const cB = state.connectorsB.find(c => c.id === w.toConnId);
 
-              ctx.fillStyle = "#94a3b8";
-              ctx.font = "11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#64748b";
+              ctx.font = "11px monospace";
               ctx.fillText(`${idx + 1}.`, cols[0].x, curY + 18);
 
-              ctx.fillStyle = "#38bdf8";
-              ctx.font = "bold 11px Inter, sans-serif";
+              ctx.fillStyle = "#0284c7";
+              ctx.font = "bold 11px sans-serif";
               ctx.fillText(cA ? `${cA.name} (${getMolexCatalogPartNumber(cA)})` : "A", cols[1].x, curY + 18);
 
-              ctx.fillStyle = "#ffffff";
-              ctx.font = "bold 11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#0f172a";
+              ctx.font = "bold 11px monospace";
               ctx.fillText(`Pin #${w.fromPin}`, cols[2].x, curY + 18);
 
-              ctx.fillStyle = "#34d399";
-              ctx.font = "bold 11px Inter, sans-serif";
+              ctx.fillStyle = "#059669";
+              ctx.font = "bold 11px sans-serif";
               ctx.fillText(cB ? `${cB.name} (${getMolexCatalogPartNumber(cB)})` : "B", cols[3].x, curY + 18);
 
-              ctx.fillStyle = "#ffffff";
-              ctx.font = "bold 11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#0f172a";
+              ctx.font = "bold 11px monospace";
               ctx.fillText(`Pin #${w.toPin}`, cols[4].x, curY + 18);
 
-              // Kropka koloru
-              ctx.fillStyle = w.color || "#38bdf8";
+              ctx.fillStyle = w.color || "#0284c7";
               ctx.beginPath();
               ctx.arc(cols[5].x + 6, curY + 14, 5, 0, Math.PI * 2);
               ctx.fill();
 
-              ctx.fillStyle = "#e2e8f0";
-              ctx.font = "11px Inter, sans-serif";
+              ctx.fillStyle = "#334155";
+              ctx.font = "11px sans-serif";
               ctx.fillText(w.colorName || "", cols[5].x + 17, curY + 18);
 
-              ctx.fillStyle = "#fde047";
-              ctx.font = "bold 11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#d97706";
+              ctx.font = "bold 11px monospace";
               ctx.fillText(w.signal || "-", cols[6].x, curY + 18);
 
-              ctx.fillStyle = "#cbd5e1";
-              ctx.font = "11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#475569";
+              ctx.font = "11px monospace";
               ctx.fillText(w.awg || "22 AWG", cols[7].x, curY + 18);
 
               curY += rowH;
@@ -1945,26 +1609,27 @@
 
           if (customPinsRowsCount > 0) {
             curY += 24;
-            ctx.fillStyle = "#c084fc";
-            ctx.font = "bold 12px Inter, sans-serif";
+            ctx.fillStyle = "#7c3aed";
+            ctx.font = "bold 12px sans-serif";
             ctx.fillText("INDYWIDUALNIE OPISANE PINY:", padX, curY);
             curY += 10;
 
             const allConns = [...state.connectorsA, ...state.connectorsB];
             customPinsList.forEach((pm, idx) => {
-              ctx.fillStyle = idx % 2 === 0 ? "#0f172a" : "#131c31";
+              ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
               ctx.fillRect(padX, curY, tableW, rowH);
+              ctx.strokeRect(padX, curY, tableW, rowH);
               const connObj = allConns.find(c => c.id === pm.connId);
 
-              ctx.fillStyle = "#e9d5ff";
-              ctx.font = "bold 11px JetBrains Mono, monospace";
+              ctx.fillStyle = "#6d28d9";
+              ctx.font = "bold 11px monospace";
               ctx.fillText(`${connObj ? connObj.name : pm.connId} • Pin #${pm.pin}`, padX + 12, curY + 18);
 
-              ctx.fillStyle = "#fde047";
+              ctx.fillStyle = "#d97706";
               ctx.fillText(`Opis: ${pm.label || '-'}`, padX + 200, curY + 18);
 
-              ctx.fillStyle = "#cbd5e1";
-              ctx.font = "11px Inter, sans-serif";
+              ctx.fillStyle = "#475569";
+              ctx.font = "11px sans-serif";
               ctx.fillText(`Obrys: ${pm.strokeName || 'Domyślny'} | Styk: ${pm.fillName || 'Domyślny'}`, padX + 460, curY + 18);
               curY += rowH;
             });
@@ -1980,40 +1645,281 @@
       img.src = url;
     }
 
+    function downloadSchematicPNG() {
+      const baseName = getSanitizedBaseFilename();
+      const fileName = `${baseName}.png`;
+      generatePNGDataURL(currentExportMode, async (dataUrl) => {
+        try {
+          const file = dataURLtoFile(dataUrl, fileName);
+          await saveBlobUniversal(file, fileName, 'image/png', 'Obraz PNG Schematu Molex');
+        } catch (e) {
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast(`Pobrano obraz: ${fileName}`);
+        }
+      });
+    }
+
+    async function downloadVectorSVG() {
+      const lightSvg = getLightThemeSVGBlob();
+      if (!lightSvg) return;
+      const blob = new Blob([lightSvg.xml], { type: "image/svg+xml;charset=utf-8" });
+      const fileName = `${getSanitizedBaseFilename()}.svg`;
+      await saveBlobUniversal(blob, fileName, 'image/svg+xml', 'Wektorowy Schemat SVG');
+    }
+
+    async function downloadCSVTable() {
+      const lines = [];
+      lines.push(["Lp", "Zlacze_Lewa_A", "Part_Number_A", "Pin_A", "Zlacze_Prawa_B", "Part_Number_B", "Pin_B", "Kolor_Przewodu", "Kod_HEX", "Opis_Sygnalu", "Przekroj_AWG"].join(";"));
+
+      state.wires.forEach((w, idx) => {
+        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
+        const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        const row = [
+          idx + 1,
+          cA ? cA.name : "A",
+          cA ? getMolexCatalogPartNumber(cA) : "-",
+          `Pin ${w.fromPin}`,
+          cB ? cB.name : "B",
+          cB ? getMolexCatalogPartNumber(cB) : "-",
+          `Pin ${w.toPin}`,
+          w.colorName || "",
+          w.color || "",
+          (w.signal || "-").replace(/;/g, ","),
+          w.awg || "22 AWG"
+        ];
+        lines.push(row.join(";"));
+      });
+
+      const customPins = Object.values(state.pinMeta || {});
+      if (customPins.length > 0) {
+        lines.push("");
+        lines.push(["INDYWIDUALNIE OPISANE PINY", "Zlacze", "Pin", "Opis_Pinu", "Kolor_Obrysu", "Kolor_Wypelnienia"].join(";"));
+        const allConns = [...state.connectorsA, ...state.connectorsB];
+        customPins.forEach((pm, i) => {
+          const c = allConns.find(x => x.id === pm.connId);
+          lines.push([
+            i + 1,
+            c ? c.name : pm.connId,
+            `Pin ${pm.pin}`,
+            (pm.label || "-").replace(/;/g, ","),
+            pm.strokeName || pm.strokeColor || "Domyslny",
+            pm.fillName || pm.fillColor || "Domyslny"
+          ].join(";"));
+        });
+      }
+
+      const csvContent = "\uFEFF" + lines.join("\r\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+      const fileName = `${getSanitizedBaseFilename()}.csv`;
+      await saveBlobUniversal(blob, fileName, 'text/csv', 'Tabela Montażowa CSV (Excel)');
+    }
+
+    function getHTMLReportContent() {
+      const lightSvg = getLightThemeSVGBlob();
+      const svgHtml = lightSvg ? lightSvg.xml : '';
+      const rowsHtml = state.wires.map((w, i) => {
+        const cA = state.connectorsA.find(c => c.id === w.fromConnId);
+        const cB = state.connectorsB.find(c => c.id === w.toConnId);
+        return `<tr>
+          <td style="padding:8px; border:1px solid #cbd5e1;">${i + 1}</td>
+          <td style="padding:8px; border:1px solid #cbd5e1;"><b>${cA ? cA.name : '?'}</b> (${cA ? getMolexCatalogPartNumber(cA) : ''})</td>
+          <td style="padding:8px; border:1px solid #cbd5e1;"><b>Pin ${w.fromPin}</b></td>
+          <td style="padding:8px; border:1px solid #cbd5e1;"><b>${cB ? cB.name : '?'}</b> (${cB ? getMolexCatalogPartNumber(cB) : ''})</td>
+          <td style="padding:8px; border:1px solid #cbd5e1;"><b>Pin ${w.toPin}</b></td>
+          <td style="padding:8px; border:1px solid #cbd5e1;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${w.color};vertical-align:middle;margin-right:6px;border:1px solid #cbd5e1;"></span>${w.colorName}</td>
+          <td style="padding:8px; border:1px solid #cbd5e1; color:#d97706; font-family:monospace; font-weight:bold;">${w.signal || '-'}</td>
+          <td style="padding:8px; border:1px solid #cbd5e1;">${w.awg}</td>
+        </tr>`;
+      }).join('');
+
+      return `
+        <div class="wrap" style="max-width:1100px; margin:0 auto; background:#ffffff; color:#0f172a; font-family:sans-serif; padding:20px;">
+          <h1 style="font-size:20px; color:#0284c7; margin-bottom:4px;">Dokumentacja Schematu Wiązki Molex</h1>
+          <div style="font-size:12px; color:#64748b; margin-bottom:16px;">Wygenerowano: ${new Date().toLocaleString('pl-PL')}</div>
+          <div class="svg-box" style="background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; padding:12px; margin-bottom:24px;">
+            ${svgHtml}
+          </div>
+          <h2 style="font-size:16px; margin-bottom:8px;">Tabela Połączeń Przewodowych</h2>
+          <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #cbd5e1;">
+            <thead>
+              <tr style="background:#f1f5f9;">
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Lp.</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Złącze Lewa (A)</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Pin A</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Złącze Prawa (B)</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Pin B</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Kolor przewodu</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Opis / Sygnał</th>
+                <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Przekrój</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getHTMLReportString() {
+      return `<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentacja Wiązki Molex – ${getSanitizedBaseFilename()}</title>
+</head>
+<body style="background:#ffffff; margin:0;">
+  ${getHTMLReportContent()}
+</body>
+</html>`;
+    }
+
+    async function downloadStandaloneHTMLReport() {
+      const reportHtml = getHTMLReportString();
+      const blob = new Blob([reportHtml], { type: "text/html;charset=utf-8" });
+      const fileName = `${getSanitizedBaseFilename()}.html`;
+      await saveBlobUniversal(blob, fileName, 'text/html', 'Dokumentacja HTML Offline');
+    }
+
+    function printToPDF() {
+      // Pobierz czysty kontener HTML wydruku (z odwróconymi kolorami - białe tło)
+      const reportHtml = getHTMLReportContent();
+      
+      // Przygotuj tymczasowy kontener bezpośrednio w obecnym dokumencie (zamiast zawodnego iframe)
+      let printContainer = document.getElementById('temp-print-container');
+      if (printContainer) printContainer.remove();
+      
+      printContainer = document.createElement('div');
+      printContainer.id = 'temp-print-container';
+      printContainer.innerHTML = reportHtml;
+      document.body.appendChild(printContainer);
+      
+      // Dodaj reguły CSS ukrywające resztę aplikacji podczas druku
+      let printStyle = document.getElementById('temp-print-style');
+      if (printStyle) printStyle.remove();
+      
+      printStyle = document.createElement('style');
+      printStyle.id = 'temp-print-style';
+      printStyle.innerHTML = `
+        @media screen {
+          /* Na ekranie komputera ten kontener jest całkowicie niewidoczny */
+          #temp-print-container { display: none !important; }
+        }
+        @media print {
+          /* Ukryj caly ciemny interfejs programu na czas tworzenia PDF */
+          body > *:not(#temp-print-container):not(style):not(script) { 
+            display: none !important; 
+          }
+          /* Wymuś idealnie białe tło i czarne ramy dla druku */
+          body, html { 
+            background-color: #ffffff !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+          }
+          #temp-print-container { 
+            display: block !important; 
+            width: 100% !important; 
+          }
+          .svg-box { border: 1px solid #000000 !important; }
+          table, th, td { border: 1px solid #000000 !important; color: #000000 !important; }
+          th { background: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          @page { size: landscape; margin: 10mm; }
+        }
+      `;
+      document.head.appendChild(printStyle);
+      
+      // Bezpośrednie wywołanie systemowego okna. Dzięki @media print zadziała bez blokad pop-up na każdym urządzeniu!
+      window.print();
+    }
+
+    async function saveProjectUniversalJSON() {
+      const jsonStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+      const fileName = `${getSanitizedBaseFilename()}.json`;
+      await saveBlobUniversal(blob, fileName, 'application/json', 'Projekt JSON');
+    }
+
+    async function shareProjectFileMobile() {
+      const jsonStr = JSON.stringify(state, null, 2);
+      const fileName = `${getSanitizedBaseFilename()}.json`;
+      try {
+        const file = new File([jsonStr], fileName, { type: "application/json" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'Projekt Molex (.json)' });
+          return;
+        }
+      } catch (e) {}
+      await saveProjectUniversalJSON();
+    }
+
+    function copyProjectToClipboard() {
+      const tempInput = document.createElement('textarea');
+      tempInput.value = JSON.stringify(state, null, 2);
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast("Skopiowano kod JSON projektu do schowka!");
+    }
+
+    function handleProjectFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && Array.isArray(parsed.connectorsA) && Array.isArray(parsed.connectorsB)) {
+            state = parsed;
+            renderAll();
+            showToast(`Wczytano projekt: ${file.name}`);
+          }
+        } catch (err) {
+          showToast("Błąd odczytu pliku JSON!");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function loadProjectFromInput() {
+      const input = document.getElementById('import-json-input');
+      if (!input || !input.value.trim()) return;
+      try {
+        const parsed = JSON.parse(input.value.trim());
+        if (parsed && Array.isArray(parsed.connectorsA) && Array.isArray(parsed.connectorsB)) {
+          state = parsed;
+          input.value = '';
+          renderAll();
+          showToast("Wczytano projekt ze schowka!");
+        }
+      } catch (e) {
+        showToast("Nieprawidłowy kod JSON!");
+      }
+    }
+
     function openPreviewModal(mode = 'sheet') {
       currentExportMode = mode;
-      updateExportModeButtons();
       generatePNGDataURL(currentExportMode, (dataUrl) => {
         const previewImg = document.getElementById('generated-png-preview');
         if (previewImg) previewImg.src = dataUrl;
         const modalEl = document.getElementById('preview-modal');
-        if (modalEl) {
-          modalEl.style.display = 'flex';
-          modalEl.classList.add('is-open');
-        }
+        if (modalEl) modalEl.classList.add('is-open');
       });
     }
 
     function switchExportMode(mode) {
       currentExportMode = mode;
-      updateExportModeButtons();
+      document.getElementById('mode-btn-sheet').className = mode === 'sheet' ? 'btn-emerald' : 'btn-outline';
+      document.getElementById('mode-btn-schematic').className = mode === 'schematic' ? 'btn-emerald' : 'btn-outline';
       generatePNGDataURL(currentExportMode, (dataUrl) => {
         const previewImg = document.getElementById('generated-png-preview');
         if (previewImg) previewImg.src = dataUrl;
       });
-    }
-
-    function updateExportModeButtons() {
-      const btnSheet = document.getElementById('mode-btn-sheet');
-      const btnSchem = document.getElementById('mode-btn-schematic');
-      if (!btnSheet || !btnSchem) return;
-      if (currentExportMode === 'sheet') {
-        btnSheet.className = "flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow";
-        btnSchem.className = "flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300";
-      } else {
-        btnSchem.className = "flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow";
-        btnSheet.className = "flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300";
-      }
     }
 
     function dataURLtoFile(dataurl, filename) {
@@ -2022,9 +1928,7 @@
       const bstr = atob(arr[1]);
       let n = bstr.length;
       const u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
+      while (n--) u8arr[n] = bstr.charCodeAt(n);
       return new File([u8arr], filename, { type: mime });
     }
 
@@ -2034,12 +1938,7 @@
         try {
           const file = dataURLtoFile(dataUrl, fileName);
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: 'Schemat Wiązki Molex 43025',
-              text: 'Schemat połączeń wiązki Molex wraz z tabelą pinout.'
-            });
-            showToast("Otwarto menu systemowe udostępniania!");
+            await navigator.share({ files: [file], title: 'Schemat Molex 43025' });
             return;
           }
         } catch (err) {
@@ -2047,21 +1946,14 @@
         }
         downloadSchematicPNG();
       };
-
-      if (latestGeneratedDataUrl) {
-        await processShare(latestGeneratedDataUrl);
-      } else {
-        generatePNGDataURL(currentExportMode, processShare);
-      }
+      if (latestGeneratedDataUrl) await processShare(latestGeneratedDataUrl);
+      else generatePNGDataURL(currentExportMode, processShare);
     }
 
-    // =========================================================================
-    // LOGIKA INTERAKCJI, PINÓW, PRZEWODÓW, ZŁĄCZ I TABELI
-    // =========================================================================
     function hexToRgba(hex, alpha) {
-      if (!hex || typeof hex !== 'string') return `rgba(15, 23, 42, ${alpha})`;
+      if (!hex || typeof hex !== 'string') return `rgba(255, 255, 255, ${alpha})`;
       const clean = hex.replace('#', '');
-      if (clean.length !== 6) return `rgba(15, 23, 42, ${alpha})`;
+      if (clean.length !== 6) return `rgba(255, 255, 255, ${alpha})`;
       const r = parseInt(clean.substring(0, 2), 16);
       const g = parseInt(clean.substring(2, 4), 16);
       const b = parseInt(clean.substring(4, 6), 16);
@@ -2076,17 +1968,8 @@
     function setInteractionMode(mode) {
       interactionMode = mode;
       selectedPin = null;
-      const wireBtn = document.getElementById('mode-wire-btn');
-      const pinBtn = document.getElementById('mode-pin-btn');
-      if (wireBtn && pinBtn) {
-        if (mode === 'wire') {
-          wireBtn.className = "px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-sky-600 text-white shadow transition";
-          pinBtn.className = "px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition";
-        } else {
-          pinBtn.className = "px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-purple-600 text-white shadow transition";
-          wireBtn.className = "px-3 py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition";
-        }
-      }
+      document.getElementById('mode-wire-btn').className = mode === 'wire' ? 'btn-sky' : 'btn-outline';
+      document.getElementById('mode-pin-btn').className = mode === 'pin' ? 'btn-purple' : 'btn-outline';
       updateStatusBanner();
       renderSchematicSVG();
     }
@@ -2094,13 +1977,11 @@
     function updateStatusBanner() {
       const pill = document.getElementById('active-pin-pill');
       const title = document.getElementById('status-title');
-      const sub = document.getElementById('status-subtitle');
       const nameEl = document.getElementById('active-pin-name');
 
       if (interactionMode === 'pin') {
         if (pill) pill.classList.add('hidden');
         if (title) title.textContent = "Tryb edycji pojedynczego pinu: Dotknij dowolny pin na schemacie, aby nadać mu opis lub kolor";
-        if (sub) sub.innerHTML = "W tym trybie każde dotknięcie komory gniazda otwiera okienko <b>Opisu i Koloru Pinu</b>.";
         return;
       }
 
@@ -2108,19 +1989,11 @@
         const allConns = [...state.connectorsA, ...state.connectorsB];
         const c = allConns.find(x => x.id === selectedPin.connId);
         if (nameEl) nameEl.textContent = `${c ? c.name : selectedPin.connId}: Pin #${selectedPin.pin}`;
-        if (pill) {
-          pill.classList.remove('hidden');
-          pill.classList.add('flex');
-        }
+        if (pill) pill.classList.remove('hidden');
         if (title) title.textContent = `Wybrano ${c ? c.name : ''}: Pin #${selectedPin.pin}. Dotknij teraz pin po drugiej stronie, aby połączyć przewodem!`;
-        if (sub) sub.innerHTML = "Lub dotknij ten sam pin ponownie, aby zmienić jego <b>indywidualny opis i kolor komory</b>.";
       } else {
-        if (pill) {
-          pill.classList.add('hidden');
-          pill.classList.remove('flex');
-        }
+        if (pill) pill.classList.add('hidden');
         if (title) title.textContent = "Jak łączyć piny: Dotknij pin po lewej (Strona A), a potem pin po prawej (Strona B)";
-        if (sub) sub.innerHTML = "Możesz też dotknąć ten sam pin drugi raz (lub przełączyć tryb wyżej), aby ustawić <b>opis pinu, kolor obrysu i kolor pinu</b>.";
       }
     }
 
@@ -2135,15 +2008,12 @@
         openSinglePinModal(side, connId, pin);
         return;
       }
-
       if (!selectedPin) {
         selectedPin = { side, connId, pin };
         updateStatusBanner();
         renderSchematicSVG();
         return;
       }
-
-      // Ponowne kliknięcie tego samego pinu otwiera modal opisu/koloru pojedynczego pinu
       if (selectedPin.side === side && selectedPin.connId === connId && selectedPin.pin === pin) {
         const s = selectedPin;
         selectedPin = null;
@@ -2152,8 +2022,6 @@
         openSinglePinModal(s.side, s.connId, s.pin);
         return;
       }
-
-      // Jeśli kliknięto inny pin po tej samej stronie, przełącz zaznaczenie
       if (selectedPin.side === side) {
         selectedPin = { side, connId, pin };
         updateStatusBanner();
@@ -2161,7 +2029,6 @@
         return;
       }
 
-      // Połączenie między Stroną A i Stroną B
       const fromConnId = (selectedPin.side === 'A') ? selectedPin.connId : connId;
       const fromPin = (selectedPin.side === 'A') ? selectedPin.pin : pin;
       const toConnId = (selectedPin.side === 'B') ? selectedPin.connId : connId;
@@ -2186,14 +2053,11 @@
       openSinglePinModal(s.side, s.connId, s.pin);
     }
 
-    // =========================================================================
-    // OBSŁUGA MODALA PRZEWODU (MODAL 1)
-    // =========================================================================
     function openWireConfigModal(fromConnId, fromPin, toConnId, toPin, existingWire = null) {
       const cA = state.connectorsA.find(c => c.id === fromConnId);
       const cB = state.connectorsB.find(c => c.id === toConnId);
-
       const defaultColor = WIRE_COLORS[state.wires.length % WIRE_COLORS.length];
+
       modalContext = {
         fromConnId,
         fromPin: Number(fromPin),
@@ -2210,19 +2074,11 @@
       document.getElementById('modal-awg-select').value = existingWire ? (existingWire.awg || '22 AWG') : '22 AWG';
 
       const delBtn = document.getElementById('modal-delete-wire-btn');
-      if (existingWire) {
-        delBtn.classList.remove('hidden');
-        delBtn.classList.add('flex');
-      } else {
-        delBtn.classList.add('hidden');
-        delBtn.classList.remove('flex');
-      }
+      if (existingWire) delBtn.classList.remove('hidden');
+      else delBtn.classList.add('hidden');
 
       renderModalWireColorGrid();
-
-      const modalEl = document.getElementById('wire-modal');
-      modalEl.style.display = 'flex';
-      modalEl.classList.add('is-open');
+      document.getElementById('wire-modal').classList.add('is-open');
     }
 
     function renderModalWireColorGrid() {
@@ -2231,9 +2087,9 @@
       grid.innerHTML = WIRE_COLORS.map(c => {
         const isSel = (modalContext.selectedColorHex === c.hex);
         return `<button type="button" onclick="selectModalWireColor('${c.hex}', '${c.name}')"
-          class="flex items-center gap-1.5 p-2 rounded-xl border text-left text-[11px] font-semibold transition ${isSel ? 'border-sky-400 bg-sky-500/20 text-white ring-2 ring-sky-400/50' : 'border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-500'}">
-          <span class="w-3.5 h-3.5 rounded-full shrink-0 border border-white/40" style="background-color:${c.hex};"></span>
-          <span class="truncate">${c.name}</span>
+          style="justify-content:flex-start; padding:6px 8px; font-size:11px; border:2px solid ${isSel ? '#0284c7' : '#334155'}; background:${isSel ? '#1e293b' : '#0b1120'}; color:#f8fafc;">
+          <span style="width:12px; height:12px; border-radius:50%; background:${c.hex}; border:1px solid #f8fafc; flex-shrink:0;"></span>
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.name}</span>
         </button>`;
       }).join('');
     }
@@ -2246,8 +2102,7 @@
     }
 
     function setQuickSignal(sig) {
-      const inp = document.getElementById('modal-signal-input');
-      if (inp) inp.value = sig;
+      document.getElementById('modal-signal-input').value = sig;
     }
 
     function saveWireFromModal() {
@@ -2276,9 +2131,8 @@
           signal: sig,
           awg: awg
         });
-        showToast("Dodano nowe połączenie przewodowe!");
+        showToast("Dodano przewód!");
       }
-
       closeAllModals();
       renderAll();
     }
@@ -2291,9 +2145,6 @@
       showToast("Usunięto przewód!");
     }
 
-    // =========================================================================
-    // OBSŁUGA MODALA POJEDYNCZEGO PINU (MODAL 3)
-    // =========================================================================
     function openSinglePinModal(side, connId, pin) {
       const allConns = [...state.connectorsA, ...state.connectorsB];
       const conn = allConns.find(c => c.id === connId);
@@ -2310,20 +2161,13 @@
         fillName: existing.fillName || 'Domyślny'
       };
 
-      const badge = document.getElementById('pin-modal-side-badge');
-      if (badge) {
-        badge.textContent = side === 'A' ? 'STRONA A (LEWA)' : 'STRONA B (PRAWA)';
-        badge.className = `text-[10px] font-bold uppercase block ${side === 'A' ? 'text-sky-400' : 'text-emerald-400'}`;
-      }
+      document.getElementById('pin-modal-side-badge').textContent = side === 'A' ? 'STRONA A (LEWA)' : 'STRONA B (PRAWA)';
       document.getElementById('pin-modal-title-label').textContent = `${conn ? conn.name : connId} : Pin #${pin}`;
       document.getElementById('pin-modal-label-input').value = pinModalContext.label;
 
       renderPinModalColorGrids();
       updateSinglePinLivePreview();
-
-      const modalEl = document.getElementById('pin-modal');
-      modalEl.style.display = 'flex';
-      modalEl.classList.add('is-open');
+      document.getElementById('pin-modal').classList.add('is-open');
     }
 
     function renderPinModalColorGrids() {
@@ -2335,9 +2179,9 @@
         strokeGrid.innerHTML = WIRE_COLORS.map(c => {
           const isSel = pinModalContext.strokeColor === c.hex;
           return `<button type="button" onclick="selectPinStrokeColor('${c.hex}', '${c.name}')"
-            class="flex items-center gap-1.5 p-1.5 rounded-xl border text-left text-[11px] font-semibold transition ${isSel ? 'border-purple-400 bg-purple-500/20 text-white ring-2 ring-purple-400/50' : 'border-slate-700 bg-slate-800 text-slate-300'}">
-            <span class="w-3 h-3 rounded-full shrink-0 border border-white/40" style="background-color:${c.hex};"></span>
-            <span class="truncate">${c.name}</span>
+            style="justify-content:flex-start; padding:5px 7px; font-size:11px; border:2px solid ${isSel ? '#7c3aed' : '#334155'}; background:${isSel ? '#1e293b' : '#0b1120'}; color:#f8fafc;">
+            <span style="width:11px; height:11px; border-radius:50%; background:${c.hex}; border:1px solid #f8fafc; flex-shrink:0;"></span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.name}</span>
           </button>`;
         }).join('');
       }
@@ -2346,9 +2190,9 @@
         fillGrid.innerHTML = WIRE_COLORS.map(c => {
           const isSel = pinModalContext.fillColor === c.hex;
           return `<button type="button" onclick="selectPinFillColor('${c.hex}', '${c.name}')"
-            class="flex items-center gap-1.5 p-1.5 rounded-xl border text-left text-[11px] font-semibold transition ${isSel ? 'border-purple-400 bg-purple-500/20 text-white ring-2 ring-purple-400/50' : 'border-slate-700 bg-slate-800 text-slate-300'}">
-            <span class="w-3 h-3 rounded-full shrink-0 border border-white/40" style="background-color:${c.hex};"></span>
-            <span class="truncate">${c.name}</span>
+            style="justify-content:flex-start; padding:5px 7px; font-size:11px; border:2px solid ${isSel ? '#7c3aed' : '#334155'}; background:${isSel ? '#1e293b' : '#0b1120'}; color:#f8fafc;">
+            <span style="width:11px; height:11px; border-radius:50%; background:${c.hex}; border:1px solid #f8fafc; flex-shrink:0;"></span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.name}</span>
           </button>`;
         }).join('');
       }
@@ -2381,38 +2225,29 @@
     function updateSinglePinLivePreview() {
       if (!pinModalContext) return;
       const inp = document.getElementById('pin-modal-label-input');
-      const labelVal = inp ? inp.value.trim() : '';
-      pinModalContext.label = labelVal;
+      pinModalContext.label = inp ? inp.value.trim() : '';
 
       const box = document.getElementById('pin-modal-live-preview');
       const numBadge = document.getElementById('pin-preview-num');
       const dot = document.getElementById('pin-preview-dot');
       const lbl = document.getElementById('pin-preview-label');
 
-      const strokeCol = pinModalContext.strokeColor || '#475569';
-      const fillCol = pinModalContext.fillColor || '#1e293b';
-
       if (box) {
-        box.style.borderColor = strokeCol;
-        box.style.backgroundColor = pinModalContext.fillColor ? hexToRgba(pinModalContext.fillColor, 0.34) : '#0f172a';
+        box.style.borderColor = pinModalContext.strokeColor || '#475569';
+        box.style.backgroundColor = pinModalContext.fillColor ? hexToRgba(pinModalContext.fillColor, 0.22) : '#0f172a';
       }
       if (numBadge) {
         numBadge.textContent = `#${pinModalContext.pin}`;
         numBadge.style.backgroundColor = pinModalContext.strokeColor || '#1e293b';
       }
-      if (dot) {
-        dot.style.backgroundColor = fillCol;
-      }
-      if (lbl) {
-        lbl.textContent = labelVal || 'WOLNY';
-      }
+      if (dot) dot.style.backgroundColor = pinModalContext.fillColor || '#cbd5e1';
+      if (lbl) lbl.textContent = pinModalContext.label || 'WOLNY';
     }
 
     function saveSinglePinFromModal() {
       if (!pinModalContext) return;
       const inp = document.getElementById('pin-modal-label-input');
       const labelVal = inp ? inp.value.trim() : '';
-
       if (!state.pinMeta) state.pinMeta = {};
       const key = `${pinModalContext.connId}_${pinModalContext.pin}`;
 
@@ -2430,49 +2265,32 @@
           fillName: pinModalContext.fillName
         };
       }
-
       closeAllModals();
       renderAll();
-      showToast(`Zapisano wygląd i opis Pinu #${pinModalContext.pin}!`);
+      showToast(`Zapisano Pin #${pinModalContext.pin}!`);
     }
 
     function resetSinglePinStyleFromModal() {
       if (!pinModalContext) return;
-      if (state.pinMeta) {
-        delete state.pinMeta[`${pinModalContext.connId}_${pinModalContext.pin}`];
-      }
+      if (state.pinMeta) delete state.pinMeta[`${pinModalContext.connId}_${pinModalContext.pin}`];
       closeAllModals();
       renderAll();
-      showToast(`Wyczyszczono styl Pinu #${pinModalContext.pin}!`);
+      showToast(`Wyczyszczono Pin #${pinModalContext.pin}!`);
     }
 
-    // =========================================================================
-    // ZARZĄDZANIE ZAKŁADKAMI, FORMULARZAMI I LISTAMI
-    // =========================================================================
     function closeAllModals() {
       ['wire-modal', 'preview-modal', 'pin-modal'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-          el.classList.remove('is-open');
-          el.style.display = 'none';
-        }
+        if (el) el.classList.remove('is-open');
       });
     }
 
     function handleBackdropClick(event, modalId) {
-      if (event.target && event.target.id === modalId) {
-        closeAllModals();
-      }
-    }
-
-    function goHomeView() {
-      closeAllModals();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (event.target && event.target.id === modalId) closeAllModals();
     }
 
     function switchBottomTab(tab) {
-      const tabs = ['wires', 'connectors', 'table'];
-      tabs.forEach(t => {
+      ['wires', 'connectors', 'table'].forEach(t => {
         const panel = document.getElementById(`panel-${t}`);
         const btn = document.getElementById(`tab-btn-${t}`);
         if (panel) {
@@ -2480,11 +2298,8 @@
           else panel.classList.add('hidden');
         }
         if (btn) {
-          if (t === tab) {
-            btn.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-sky-600 text-white shadow transition";
-          } else {
-            btn.className = "py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 bg-slate-800 text-slate-300 hover:text-white transition";
-          }
+          if (t === tab) btn.classList.add('active');
+          else btn.classList.remove('active');
         }
       });
     }
@@ -2492,28 +2307,20 @@
     function changePinNumberingMode(val) {
       state.pinNumberingMode = val;
       renderAll();
-      showToast("Zmieniono tryb numeracji pinów 2-rzędowych!");
     }
 
     function clearAllWires() {
       state.wires = [];
       selectedPin = null;
       renderAll();
-      showToast("Wyczyszczono wszystkie przewody połączeniowe!");
+      showToast("Wyczyszczono przewody!");
     }
 
     function clearAllPinsMeta() {
       state.pinMeta = {};
       selectedPin = null;
       renderAll();
-      showToast("Wyczyszczono indywidualne opisy i kolory pinów!");
-    }
-
-    function resetToDefaultExample() {
-      state = getDefaultState();
-      selectedPin = null;
-      renderAll();
-      showToast("Przywrócono domyślny projekt Molex 43025!");
+      showToast("Wyczyszczono opisy pinów!");
     }
 
     function populateQuickBarSelects() {
@@ -2527,16 +2334,14 @@
         if (state.connectorsA.some(c => c.id === prevA)) selConnA.value = prevA;
         populateQuickPinSelect('A');
       }
-
       if (selConnB) {
         const prevB = selConnB.value;
         selConnB.innerHTML = state.connectorsB.map(c => `<option value="${c.id}">${c.name} (${c.pins}-pin)</option>`).join('');
         if (state.connectorsB.some(c => c.id === prevB)) selConnB.value = prevB;
         populateQuickPinSelect('B');
       }
-
       if (selColor && selColor.options.length === 0) {
-        selColor.innerHTML = WIRE_COLORS.map(c => `<option value="${c.hex}" data-name="${c.name}">${c.name}</option>`).join('');
+        selColor.innerHTML = WIRE_COLORS.map(c => `<option value="${c.hex}">${c.name}</option>`).join('');
       }
     }
 
@@ -2544,15 +2349,11 @@
       const connSel = document.getElementById(side === 'A' ? 'quick-conn-a' : 'quick-conn-b');
       const pinSel = document.getElementById(side === 'A' ? 'quick-pin-a' : 'quick-pin-b');
       if (!connSel || !pinSel) return;
-
       const list = side === 'A' ? state.connectorsA : state.connectorsB;
       const conn = list.find(c => c.id === connSel.value) || list[0];
       if (!conn) return;
-
       let html = '';
-      for (let p = 1; p <= conn.pins; p++) {
-        html += `<option value="${p}">Pin #${p}</option>`;
-      }
+      for (let p = 1; p <= conn.pins; p++) html += `<option value="${p}">Pin #${p}</option>`;
       pinSel.innerHTML = html;
     }
 
@@ -2565,9 +2366,7 @@
       const colorSel = document.getElementById('quick-color');
       const awgSel = document.getElementById('quick-awg');
 
-      const colorHex = colorSel.value;
-      const colorObj = WIRE_COLORS.find(c => c.hex === colorHex) || WIRE_COLORS[0];
-
+      const colorObj = WIRE_COLORS.find(c => c.hex === colorSel.value) || WIRE_COLORS[0];
       state.wires.push({
         id: 'w_' + Date.now(),
         fromConnId,
@@ -2579,7 +2378,6 @@
         signal: sigInput.value.trim(),
         awg: awgSel.value
       });
-
       sigInput.value = '';
       renderAll();
       showToast("Dodano przewód!");
@@ -2588,34 +2386,28 @@
     function renderWiresCards() {
       const container = document.getElementById('wires-cards-container');
       if (!container) return;
-
       if (state.wires.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400 bg-slate-900/50 rounded-xl border border-slate-800">
-          Brak utworzonych połączeń. Dotknij pin po lewej stronie schematu, a następnie pin po prawej stronie, aby połączyć je przewodem.
+        container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:16px; color:#94a3b8; background:#0f172a; border:1px dashed #334155; border-radius:10px;">
+          Brak utworzonych połączeń. Dotknij pin w złączu po lewej, a następnie po prawej, aby połączyć je przewodem.
         </div>`;
         return;
       }
-
-      container.innerHTML = state.wires.map((w, idx) => {
+      container.innerHTML = state.wires.map(w => {
         const cA = state.connectorsA.find(c => c.id === w.fromConnId);
         const cB = state.connectorsB.find(c => c.id === w.toConnId);
         return `<div onclick="openWireConfigModal('${w.fromConnId}', ${w.fromPin}, '${w.toConnId}', ${w.toPin}, state.wires.find(x=>x.id==='${w.id}'))"
-          class="bg-slate-900/90 hover:bg-slate-900 border border-slate-700 hover:border-sky-500/60 rounded-xl p-3 flex items-center justify-between gap-2 cursor-pointer transition">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-4 h-4 rounded-full shrink-0 border border-white/50" style="background-color:${w.color};"></span>
-            <div class="min-w-0">
-              <div class="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
-                <span class="text-sky-400 font-mono">${cA ? cA.name : 'A'}:#${w.fromPin}</span>
-                <i class="fa-solid fa-arrow-right text-[10px] text-slate-500"></i>
-                <span class="text-emerald-400 font-mono">${cB ? cB.name : 'B'}:#${w.toPin}</span>
-                <span class="text-amber-300 font-mono truncate">${w.signal ? `• ${w.signal}` : ''}</span>
+          style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="width:14px; height:14px; border-radius:50%; background:${w.color}; border:1px solid #f8fafc; display:inline-block;"></span>
+            <div>
+              <div class="font-mono" style="font-weight:800; font-size:12px;">
+                <span style="color:#38bdf8;">${cA ? cA.name : 'A'}:#${w.fromPin}</span> → <span style="color:#34d399;">${cB ? cB.name : 'B'}:#${w.toPin}</span>
+                ${w.signal ? `<span style="color:#fbbf24;"> • ${w.signal}</span>` : ''}
               </div>
-              <div class="text-[11px] text-slate-400">${w.colorName} • ${w.awg || '22 AWG'}</div>
+              <div style="font-size:11px; color:#94a3b8;">${w.colorName} • ${w.awg || '22 AWG'}</div>
             </div>
           </div>
-          <button type="button" onclick="event.stopPropagation(); removeWireById('${w.id}')" class="text-rose-400 hover:text-rose-300 p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20">
-            <i class="fa-solid fa-trash-can text-xs"></i>
-          </button>
+          <button type="button" class="btn-rose" style="padding:4px 8px;" onclick="event.stopPropagation(); removeWireById('${w.id}')">✕</button>
         </div>`;
       }).join('');
     }
@@ -2623,35 +2415,32 @@
     function removeWireById(wireId) {
       state.wires = state.wires.filter(w => w.id !== wireId);
       renderAll();
-      showToast("Usunięto przewód!");
     }
 
     function renderCustomPinsCards() {
       const container = document.getElementById('custom-pins-cards-container');
       if (!container) return;
-
       const list = Object.values(state.pinMeta || {}).filter(p => p && (p.label || p.strokeColor || p.fillColor));
       if (list.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-4 text-xs text-slate-400 bg-slate-900/50 rounded-xl border border-slate-800">
-          Brak indywidualnie opisanych pinów. Dotknij dowolny pin na schemacie dwa razy (lub włącz tryb „Pojedynczy pin”), aby ustawić opis i kolor komory.
+        container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:14px; color:#94a3b8; background:#0f172a; border:1px dashed #334155; border-radius:10px;">
+          Brak indywidualnie opisanych pinów. Dotknij dowolny pin dwa razy, aby ustawić opis i kolor komory.
         </div>`;
         return;
       }
-
       const allConns = [...state.connectorsA, ...state.connectorsB];
       container.innerHTML = list.map(pm => {
         const c = allConns.find(x => x.id === pm.connId);
         const side = state.connectorsA.some(x => x.id === pm.connId) ? 'A' : 'B';
         return `<div onclick="openSinglePinModal('${side}', '${pm.connId}', ${pm.pin})"
-          class="bg-slate-900/90 hover:bg-slate-900 border border-slate-700 hover:border-purple-400/60 rounded-xl p-2.5 flex items-center justify-between gap-2 cursor-pointer transition">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="w-4 h-4 rounded shrink-0" style="background-color:${pm.fillColor || '#1e293b'}; border:2px solid ${pm.strokeColor || '#475569'};"></span>
-            <div class="min-w-0">
-              <div class="text-xs font-bold text-white font-mono">${c ? c.name : pm.connId} : Pin #${pm.pin}</div>
-              <div class="text-[11px] text-amber-300 font-mono truncate">${pm.label || 'Brak opisu'}</div>
+          style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="width:14px; height:14px; border-radius:4px; background:${pm.fillColor || '#0f172a'}; border:2px solid ${pm.strokeColor || '#f8fafc'}; display:inline-block;"></span>
+            <div>
+              <div class="font-mono" style="font-weight:800; font-size:12px;">${c ? c.name : pm.connId} : Pin #${pm.pin}</div>
+              <div class="font-mono" style="font-size:11px; color:#c084fc; font-weight:700;">${pm.label || 'Brak opisu'}</div>
             </div>
           </div>
-          <i class="fa-solid fa-pen text-[11px] text-slate-400"></i>
+          <span>✏️</span>
         </div>`;
       }).join('');
     }
@@ -2662,41 +2451,35 @@
         if (!el) return;
         el.innerHTML = list.map(conn => {
           const typeOptions = MOLEX_TYPES.map(t => `<option value="${t.id}" ${conn.type === t.id ? 'selected' : ''}>${t.name}</option>`).join('');
-          return `<div class="bg-slate-900/90 border border-slate-700 rounded-xl p-3 space-y-2.5 text-xs">
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="font-mono font-extrabold text-sm ${side === 'A' ? 'text-sky-400' : 'text-emerald-400'}">${conn.name}</span>
-                <span class="text-[11px] text-slate-400 font-mono">(${getMolexCatalogPartNumber(conn)})</span>
-              </div>
-              ${list.length > 1 ? `<button type="button" onclick="removeConnector('${side}', '${conn.id}')" class="text-rose-400 hover:text-rose-300 text-xs font-bold px-2 py-1 rounded bg-rose-500/10">Usuń</button>` : ''}
+          return `<div style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <strong class="font-mono" style="font-size:14px; color:${side === 'A' ? '#38bdf8' : '#34d399'};">${conn.name} (${getMolexCatalogPartNumber(conn)})</strong>
+              ${list.length > 1 ? `<button type="button" class="btn-rose" style="padding:3px 8px; font-size:11px;" onclick="removeConnector('${side}', '${conn.id}')">Usuń</button>` : ''}
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div class="grid-3" style="margin-bottom:8px;">
               <div>
-                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Oznaczenie (np. J1)</label>
-                <input type="text" value="${conn.name}" onchange="updateConnectorField('${side}', '${conn.id}', 'name', this.value)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2 py-1.5 text-xs font-bold text-white">
+                <label class="field-label">Nazwa</label>
+                <input type="text" value="${conn.name}" onchange="updateConnectorField('${side}', '${conn.id}', 'name', this.value)">
               </div>
               <div>
-                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Liczba pinów (2..24)</label>
-                <input type="number" min="2" max="24" step="2" value="${conn.pins}" onchange="updateConnectorField('${side}', '${conn.id}', 'pins', Number(this.value))" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-white">
+                <label class="field-label">Liczba pinów (2..24)</label>
+                <input type="number" min="2" max="24" step="1" value="${conn.pins}" onchange="updateConnectorField('${side}', '${conn.id}', 'pins', Number(this.value))">
               </div>
               <div>
-                <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Układ rzędów</label>
-                <select onchange="updateConnectorField('${side}', '${conn.id}', 'rows', Number(this.value))" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2 py-1.5 text-xs font-semibold text-white">
-                  <option value="2" ${(conn.rows || 2) === 2 ? 'selected' : ''}>2 Rzędy (Dual Row 43025)</option>
-                  <option value="1" ${(conn.rows || 2) === 1 ? 'selected' : ''}>1 Rząd (Single Row 43645)</option>
+                <label class="field-label">Rzędy</label>
+                <select onchange="updateConnectorField('${side}', '${conn.id}', 'rows', Number(this.value))">
+                  <option value="2" ${(conn.rows || 2) === 2 ? 'selected' : ''}>2 Rzędy (43025)</option>
+                  <option value="1" ${(conn.rows || 2) === 1 ? 'selected' : ''}>1 Rząd (43645)</option>
                 </select>
               </div>
             </div>
             <div>
-              <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Seria złącza Molex</label>
-              <select onchange="updateConnectorField('${side}', '${conn.id}', 'type', this.value)" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-white">
-                ${typeOptions}
-              </select>
+              <label class="field-label">Seria Molex</label>
+              <select onchange="updateConnectorField('${side}', '${conn.id}', 'type', this.value)">${typeOptions}</select>
             </div>
           </div>`;
         }).join('');
       };
-
       renderSide(state.connectorsA, 'A', 'connectors-list-a');
       renderSide(state.connectorsB, 'B', 'connectors-list-b');
     }
@@ -2704,38 +2487,26 @@
     function addConnector(side) {
       const list = side === 'A' ? state.connectorsA : state.connectorsB;
       const totalCount = state.connectorsA.length + state.connectorsB.length + 1;
-      list.push({
-        id: `conn_${side.toLowerCase()}_${Date.now()}`,
-        name: `J${totalCount}`,
-        type: 'microfit',
-        pins: 8,
-        rows: 2
-      });
+      list.push({ id: `conn_${side.toLowerCase()}_${Date.now()}`, name: `J${totalCount}`, type: 'microfit', pins: 8, rows: 2 });
       renderAll();
-      showToast(`Dodano nowe złącze Molex po stronie ${side}!`);
     }
 
     function removeConnector(side, connId) {
-      if (side === 'A') {
-        if (state.connectorsA.length <= 1) return;
+      if (side === 'A' && state.connectorsA.length > 1) {
         state.connectorsA = state.connectorsA.filter(c => c.id !== connId);
         state.wires = state.wires.filter(w => w.fromConnId !== connId);
-      } else {
-        if (state.connectorsB.length <= 1) return;
+      } else if (side === 'B' && state.connectorsB.length > 1) {
         state.connectorsB = state.connectorsB.filter(c => c.id !== connId);
         state.wires = state.wires.filter(w => w.toConnId !== connId);
       }
       renderAll();
-      showToast("Usunięto złącze!");
     }
 
     function updateConnectorField(side, connId, field, value) {
       const list = side === 'A' ? state.connectorsA : state.connectorsB;
       const conn = list.find(c => c.id === connId);
       if (!conn) return;
-      if (field === 'pins') {
-        value = Math.max(2, Math.min(24, value || 2));
-      }
+      if (field === 'pins') value = Math.max(2, Math.min(24, value || 8));
       conn[field] = value;
       renderAll();
     }
@@ -2743,29 +2514,22 @@
     function renderPinoutTable() {
       const tbody = document.getElementById('pinout-table-body');
       if (!tbody) return;
-
       if (state.wires.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400">Brak połączeń przewodowych w projekcie.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:18px; color:#94a3b8;">Brak połączeń przewodowych w projekcie.</td></tr>`;
         return;
       }
-
       tbody.innerHTML = state.wires.map((w, idx) => {
         const cA = state.connectorsA.find(c => c.id === w.fromConnId);
         const cB = state.connectorsB.find(c => c.id === w.toConnId);
-        return `<tr class="hover:bg-slate-800/80 transition">
-          <td class="py-2.5 px-3 font-mono text-slate-400">${idx + 1}.</td>
-          <td class="py-2.5 px-3 font-bold text-sky-400">${cA ? `${cA.name} <span class="text-[10px] text-slate-400 font-mono">(${getMolexCatalogPartNumber(cA)})</span>` : 'A'}</td>
-          <td class="py-2.5 px-3 font-mono font-bold text-white">Pin #${w.fromPin}</td>
-          <td class="py-2.5 px-3 font-bold text-emerald-400">${cB ? `${cB.name} <span class="text-[10px] text-slate-400 font-mono">(${getMolexCatalogPartNumber(cB)})</span>` : 'B'}</td>
-          <td class="py-2.5 px-3 font-mono font-bold text-white">Pin #${w.toPin}</td>
-          <td class="py-2.5 px-3">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-full border border-white/40" style="background-color:${w.color};"></span>
-              <span>${w.colorName}</span>
-            </span>
-          </td>
-          <td class="py-2.5 px-3 font-mono font-bold text-amber-300">${w.signal || '-'}</td>
-          <td class="py-2.5 px-3 font-mono text-slate-300">${w.awg || '22 AWG'}</td>
+        return `<tr>
+          <td class="font-mono">${idx + 1}.</td>
+          <td><strong style="color:#38bdf8;">${cA ? cA.name : 'A'}</strong></td>
+          <td class="font-mono"><strong>Pin #${w.fromPin}</strong></td>
+          <td><strong style="color:#34d399;">${cB ? cB.name : 'B'}</strong></td>
+          <td class="font-mono"><strong>Pin #${w.toPin}</strong></td>
+          <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${w.color};margin-right:6px;border:1px solid #f8fafc;"></span>${w.colorName}</td>
+          <td class="font-mono"><strong style="color:#fbbf24;">${w.signal || '-'}</strong></td>
+          <td class="font-mono">${w.awg || '22 AWG'}</td>
         </tr>`;
       }).join('');
     }
@@ -2776,18 +2540,12 @@
       if (!box || !txt) return;
       txt.textContent = msg;
       box.classList.remove('hidden');
-      box.classList.add('flex');
       if (toastTimeout) clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        box.classList.add('hidden');
-        box.classList.remove('flex');
-      }, 2800);
+      toastTimeout = setTimeout(() => box.classList.add('hidden'), 2600);
     }
 
     function saveStateToStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {}
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
     }
 
     function loadStateFromStorage() {
@@ -2827,10 +2585,8 @@
       saveStateToStorage();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      loadStateFromStorage();
-      renderAll();
-    });
+    loadStateFromStorage();
+    renderAll();
   </script>
 </body>
 </html>
